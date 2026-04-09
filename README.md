@@ -1,2 +1,2 @@
-# CFD-Servicios-de-limpieza-Frontend
+# CFD-Servicios-de-limpieza
 Proyecto CFD Servicios - DUOC UC
