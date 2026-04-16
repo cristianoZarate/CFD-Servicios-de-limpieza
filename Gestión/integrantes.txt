@@ -1,0 +1,16 @@
+====================================================
+           IDENTIFICACIÓN DEL EQUIPO
+====================================================
+
+INSTITUCIÓN: DUOC UC
+PROYECTO:    Sistema de Gestión y Agendamiento CFD Servicios
+FECHA:       Abril 2026
+
+INTEGRANTES:
+----------------------------------------------------
+1. [Fernando Antonio Zárate Martínez]
+2. [Gabriel Isaac Avendaño Campos]
+
+----------------------------------------------------
+ROL DEL EQUIPO: Desarrollo Fullstack (React / Java)
+====================================================
