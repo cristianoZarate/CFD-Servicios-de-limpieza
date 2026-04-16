@@ -8,5 +8,5 @@ Esta carpeta contiene el software funcional y los recursos técnicos necesarios 
 * **Librerías:** Dependencias necesarias para la compilación del proyecto.
 
 ### Acceso Directo:
-* **URL Producción (Frontend):** [Link de Vercel]
-* **API Endpoint (Backend):** [Link de Railway]
+* **URL Producción (Frontend):** [Fase Beta]
+* **API Endpoint (Backend):** [Fase Beta]
