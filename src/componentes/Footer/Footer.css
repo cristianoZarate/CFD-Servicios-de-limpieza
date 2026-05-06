@@ -1,0 +1,77 @@
+/* src/componentes/Footer/Footer.css */
+.cfd-footer {
+    position: relative;
+    /* Crucial para el sticky footer: empuja el componente al final del contenedor flex */
+    margin-top: auto; 
+    width: 100%;
+    
+    /* Configuración de imagen clara (brillante) */
+    background-image: linear-gradient(rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.15)), url('../../assets/footer.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    
+    /* Texto oscuro para máxima legibilidad sobre el agua celeste */
+    color: var(--cfd-dark) !important;
+    overflow: hidden;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    padding: 3rem 0 1.5rem 0; /* Espaciado interno generoso */
+}
+
+/* Enlaces del footer */
+.cfd-footer a {
+    color: var(--cfd-dark) !important;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.cfd-footer a:hover {
+    color: var(--cfd-blue) !important;
+    text-decoration: underline !important;
+}
+
+/* Sello de Garantía con efecto Glassmorphism */
+.seal-container {
+    background-color: rgba(255, 255, 255, 0.4); 
+    backdrop-filter: blur(8px); /* Desenfoque del fondo de agua */
+    border: 2px solid var(--cfd-blue) !important;
+    transition: transform 0.3s ease;
+}
+
+.seal-container:hover {
+    transform: scale(1.05);
+}
+
+/* Copyright y textos secundarios */
+.cfd-footer .text-muted {
+    color: #444 !important;
+    font-weight: 400;
+}
+
+/* Botón flotante de WhatsApp */
+.whatsapp-float {
+    position: fixed;
+    width: 60px;
+    height: 60px;
+    bottom: 40px;
+    right: 40px;
+    background-color: #25d366;
+    color: #FFF;
+    border-radius: 50px;
+    text-align: center;
+    font-size: 30px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    z-index: 1000; /* Asegura que esté por encima de todo */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.whatsapp-float:hover {
+    transform: scale(1.1);
+    color: #FFF;
+    box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
+}

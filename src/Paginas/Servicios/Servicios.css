@@ -1,0 +1,98 @@
+/* src/Paginas/Servicios/Servicios.css */
+
+/* Ajuste para las tarjetas cuadradas en cascada */
+.servicios-page .nosotros-card {
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    background-color: #ffffff;
+    margin: 0 auto 20px auto; /* Centra la tarjeta y da espacio abajo */
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Efecto Hover: Elevación suave */
+.servicios-page .nosotros-card:hover {
+    transform: translateY(-10px) !important; /* Ahora flota hacia arriba */
+    background-color: #f8fbff;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+}
+
+/* Tarjeta Seleccionada (Activa) */
+.card-selected {
+    transform: translateY(-15px) scale(1.05) !important; /* Resalta más */
+    box-shadow: 0 15px 35px rgba(0, 86, 179, 0.2) !important;
+    border: 3px solid var(--cfd-blue) !important;
+    background: #ffffff !important;
+}
+
+/* Ajuste para iconos centrados */
+.servicios-page .icon-box {
+    width: 80px;  /* Un poco más grande para el diseño cuadrado */
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem; /* Icono más protagonista */
+    border-radius: 18px;
+    background-color: rgba(0, 86, 179, 0.05);
+    margin-bottom: 15px;
+    transition: all 0.3s ease;
+}
+
+.card-selected .icon-box {
+    background-color: var(--cfd-blue);
+    color: white;
+}
+
+/* Contenedor de información (debajo de la cascada) */
+.info-desplegable-container {
+    position: relative;
+    min-height: 250px;
+    margin-top: 50px;
+    border-top: 2px solid #f0f0f0;
+    padding-top: 40px;
+}
+
+/* Animación del panel de info */
+.info-panel {
+    opacity: 0;
+    display: none;
+    animation: fadeInScale 0.5s forwards ease-out;
+}
+
+.info-panel.show {
+    display: block;
+    opacity: 1;
+}
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.95) translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* Badges de los items */
+.badge-servicio {
+    background: #f1f4f9;
+    color: var(--cfd-blue);
+    padding: 10px 22px;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border: 1px solid rgba(0, 86, 179, 0.1);
+    transition: all 0.3s ease;
+}
+
+.badge-servicio:hover {
+    background: var(--cfd-blue);
+    color: white;
+    transform: translateY(-3px);
+}

@@ -1,0 +1,112 @@
+/* src/index.css */
+:root {
+  /* Nueva Paleta Tecnológica CFD Servicios */
+  --cfd-blue: #0056b3;       /* Azul Eléctrico: Botones y encabezados */
+  --cfd-blue-dark: #003d7e;  /* Azul Profundo: Para degradados tecnológicos */
+  --cfd-lime: #d4ff00;       /* Amarillo Lima: Bordes de énfasis e iconos */
+  --cfd-orange: #ff6b35;     /* Naranja Vibrante: Llamados a la acción (CTA) */
+  --cfd-cool-grey: #f0f4f8;  /* Gris Cool: Fondos de secciones */
+  --cfd-dark: #1a1a1a;       /* Negro Profundo: Texto principal */
+  --cfd-white: #ffffff;
+  
+  /* Mantenida por compatibilidad */
+  --cfd-turquoise: #00a19d; 
+}
+
+/* CONFIGURACIÓN PARA STICKY FOOTER */
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  background-color: var(--cfd-cool-grey);
+  color: var(--cfd-dark);
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main, .flex-grow-1 {
+  flex: 1 0 auto;
+}
+
+/* --- ESTILOS GLOBALES Y BANNERS --- */
+
+.banner-tecnologico {
+    /* Degradado idéntico al de "Capacitación y Excelencia" */
+    background: linear-gradient(135deg, var(--cfd-blue-dark) 0%, var(--cfd-blue) 100%);
+    padding: 80px 0;
+    color: var(--cfd-white);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Detalle de línea en Amarillo Lima para coherencia visual */
+.banner-tecnologico::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 20%;
+    right: 20%;
+    height: 3px;
+    background: var(--cfd-lime);
+    border-radius: 10px 10px 0 0;
+    opacity: 0.8;
+}
+
+/* --- ESTILOS DE COMPONENTE --- */
+
+/* Botón con el color de énfasis (Usado en Inicio para Conocer Servicios) */
+.btn-conocer-home {
+    background-color: var(--cfd-lime) !important;
+    color: var(--cfd-dark) !important;
+    border: none;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.btn-conocer-home:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(212, 255, 0, 0.4);
+}
+
+.btn-cfd-primary {
+  background-color: var(--cfd-blue);
+  color: var(--cfd-white);
+  border: none;
+  padding: 10px 25px;
+  border-radius: 6px;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.btn-cfd-primary:hover {
+  background-color: #004494;
+  box-shadow: 0 4px 12px rgba(0, 86, 179, 0.3);
+}
+
+/* Tarjetas de servicios con acento Lima */
+.card-service {
+  background-color: var(--cfd-white);
+  border: none;
+  border-bottom: 4px solid var(--cfd-lime);
+  border-radius: 12px;
+  transition: transform 0.3s ease;
+}
+
+.card-service:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Auxiliares */
+.text-cfd-blue { color: var(--cfd-blue); }
+.bg-cfd-dark { background-color: var(--cfd-dark); }
+
+.hero-gradient {
+  background: linear-gradient(135deg, var(--cfd-blue-dark) 0%, var(--cfd-blue) 100%);
+  color: var(--cfd-white);
+}
