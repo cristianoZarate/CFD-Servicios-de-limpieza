@@ -1,0 +1,40 @@
+USE cfd_servicios;
+
+-- =========================================================
+-- 1. USUARIOS (1 Admin y 2 Clientes)
+-- =========================================================
+INSERT INTO usuarios (correo, password_hash, nombre, apellido, rol, estado, created_at) VALUES
+('admin@cfd.cl', 'hash_falso_123', 'Carlos', 'Administrador', 'ADMIN', true, NOW()),
+('cliente1@mail.com', 'hash_falso_123', 'Pedro', 'Pascal', 'CLIENTE', true, NOW()),
+('cliente2@mail.com', 'hash_falso_123', 'Ana', 'Tijoux', 'CLIENTE', true, NOW());
+
+-- =========================================================
+-- 2. CATEGORÍAS DE SERVICIO
+-- =========================================================
+INSERT INTO categorias_servicio (nombre, descripcion, activo) VALUES
+('Limpieza Residencial', 'Aseo profundo para casas y departamentos.', true),
+('Limpieza Corporativa', 'Mantención integral para oficinas y locales comerciales.', true),
+('Sanitización Especial', 'Desinfección de ambientes con amonio cuaternario.', true);
+
+-- =========================================================
+-- 3. SERVICIOS
+-- =========================================================
+INSERT INTO servicios (categoria_id, nombre, descripcion, precio, duracion_min, imagen_url, activo) VALUES
+(1, 'Aseo Profundo Casa', 'Limpieza completa de hasta 3 habitaciones y 2 baños.', 45000.00, 240, '/img/casa.jpg', true),
+(1, 'Limpieza Post-Mudanza', 'Aseo detallado de espacios vacíos antes o después de habitar.', 60000.00, 300, '/img/mudanza.jpg', true),
+(2, 'Mantención Oficina Base', 'Aseo de escritorios, pisos y baños (hasta 100m2).', 35000.00, 180, '/img/oficina.jpg', true),
+(3, 'Sanitización Preventiva', 'Aplicación de amonio en interiores contra virus y bacterias.', 25000.00, 60, '/img/sani.jpg', true);
+
+-- =========================================================
+-- 4. DISPONIBILIDAD (Bloques horarios)
+-- =========================================================
+INSERT INTO disponibilidad (servicio_id, fecha, hora_inicio, hora_fin, cupos_totales, cupos_ocupados) VALUES
+(1, '2026-06-15', '09:00:00', '13:00:00', 2, 1),
+(2, '2026-06-16', '14:00:00', '19:00:00', 1, 0),
+(3, '2026-06-17', '08:30:00', '11:30:00', 3, 0);
+
+-- =========================================================
+-- 5. RESERVAS
+-- =========================================================
+INSERT INTO reservas (usuario_id, disponibilidad_id, estado, created_at) VALUES
+(2, 1, 'CONFIRMADA', NOW());
