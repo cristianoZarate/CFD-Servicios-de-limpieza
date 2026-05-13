@@ -7,6 +7,9 @@ import com.cfd.cfd.model.Usuario;
 import com.cfd.cfd.repository.DisponibilidadRepository;
 import com.cfd.cfd.repository.ReservaRepository;
 import com.cfd.cfd.repository.UsuarioRepository;
+
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,4 +55,28 @@ public class ReservaService {
 
         return reservaRepository.save(nuevaReserva);
     }
+
+        // Obtener historial de un usuario
+        public List<Reserva> obtenerPorUsuario(Integer usuarioId) {
+            return reservaRepository.findByUsuarioId(usuarioId);
+        }
+
+        // Cancelar una reserva
+        @Transactional
+        public void cancelarReserva(Integer reservaId) {
+            Reserva reserva = reservaRepository.findById(reservaId)
+                    .orElseThrow(() -> new RuntimeException("Reserva no encontrada"));
+            
+            if (reserva.getEstado().equals("CANCELADA")) {
+                throw new RuntimeException("La reserva ya está cancelada.");
+            }
+
+        // Devolvemos el cupo a la disponibilidad
+        Disponibilidad disp = reserva.getDisponibilidad();
+        disp.setCuposOcupados(disp.getCuposOcupados() - 1);
+        disponibilidadRepository.save(disp);
+
+        reserva.setEstado("CANCELADA");
+        reservaRepository.save(reserva);
+}
 }
