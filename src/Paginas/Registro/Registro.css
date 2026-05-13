@@ -1,0 +1,124 @@
+/* src/Paginas/Registro/Registro.css */
+
+/* Reutilizamos variables para mantener consistencia */
+:root {
+  --cfd-blue: #003d7e;
+  --cfd-blue-hover: #002a56;
+  --cfd-text-gray: #6c757d;
+  --cfd-border: #ced4da;
+  --cfd-bg-light: #f8f9fa;
+}
+
+.login-page-container {
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  background-color: #fff; /* O el color de fondo de tu Home */
+}
+
+.login-card {
+  width: 100%;
+  max-width: 450px;
+  background: #ffffff;
+  padding: 2.5rem;
+  border-radius: 20px; /* Bordes redondeados como en tu imagen */
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.login-header h2 {
+  color: var(--cfd-blue);
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+}
+
+.login-header p {
+  color: var(--cfd-text-gray);
+  font-size: 0.95rem;
+}
+
+/* Campos de entrada */
+.form-label {
+  font-weight: 600;
+  color: #444;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.form-control {
+  border-radius: 12px; /* Forma suave como en la captura */
+  padding: 12px 15px;
+  border: 1.5px solid var(--cfd-border);
+  transition: all 0.3s ease;
+}
+
+.form-control:focus {
+  border-color: var(--cfd-blue);
+  box-shadow: 0 0 0 0.25rem rgba(0, 61, 126, 0.1);
+  outline: none;
+}
+
+.form-control::placeholder {
+  color: #adb5bd;
+  font-weight: 400;
+}
+
+/* Botón de Registro */
+.btn-login-cfd {
+  background-color: var(--cfd-blue);
+  color: white;
+  border: none;
+  padding: 14px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 1rem;
+  margin-top: 1rem;
+  transition: background-color 0.3s ease, transform 0.1s active;
+  width: 100%;
+}
+
+.btn-login-cfd:hover {
+  background-color: var(--cfd-blue-hover);
+  cursor: pointer;
+}
+
+.btn-login-cfd:active {
+  transform: scale(0.98);
+}
+
+.btn-login-cfd:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}
+
+/* Enlaces inferiores */
+.login-footer-links a {
+  color: var(--cfd-blue);
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: color 0.2s;
+}
+
+.login-footer-links a:hover {
+  color: var(--cfd-blue-hover);
+  text-decoration: underline !important;
+}
+
+/* Alertas de error */
+.alert-danger {
+  background-color: #fff5f5;
+  color: #e53e3e;
+  border: 1px solid #feb2b2;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Ajuste responsive */
+@media (max-width: 480px) {
+  .login-card {
+    padding: 1.5rem;
+    box-shadow: none; /* En móvil se ve mejor más plano */
+  }
+}

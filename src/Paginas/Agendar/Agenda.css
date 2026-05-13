@@ -1,0 +1,171 @@
+@import url('https://fonts.googleapis.com/css2?family=Urbanist:wght@400;600;800&display=swap');
+
+/* --- CONTENEDOR Y FONDO --- */
+.agenda-bg {
+  background-color: #f4f7f9;
+  min-height: 100vh;
+  font-family: 'Urbanist', sans-serif;
+}
+
+.text-muted {
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+/* --- TARJETAS (CARDS) DE AGENDA --- */
+.agenda-card {
+  background: white;
+  padding: 25px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+  min-height: 420px;
+  border: 1px solid #edf2f7;
+}
+
+.card-header-simple {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  padding-bottom: 20px;
+  font-weight: 700;
+  color: #2d3748;
+  font-size: 1.1rem;
+}
+
+/* --- CALENDARIO RE-DISEÑADO --- */
+.react-calendar {
+  width: 100% !important;
+  border: none !important;
+  background: transparent !important;
+  font-family: 'Urbanist', sans-serif !important;
+}
+
+.react-calendar__navigation {
+  display: none;
+}
+
+.react-calendar__tile--active {
+  background: #003d7e !important;
+  color: white !important;
+  box-shadow: 0 4px 10px rgba(0, 61, 126, 0.25);
+  border-radius: 6px;
+}
+
+/* --- GRID DE HORARIOS --- */
+.grid-horarios {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.btn-hora {
+  background: #f1f3f5;
+  border: none;
+  padding: 18px 5px;
+  border-radius: 6px;
+  color: #4a5568;
+  font-weight: 700;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-hora.active {
+  background: #003d7e;
+  color: white;
+}
+
+/* --- BOTÓN CONFIRMAR --- */
+.btn-confirmar-modern {
+  background: #003d7e;
+  color: white;
+  border: none;
+  padding: 16px 50px;
+  border-radius: 10px;
+  font-weight: 800;
+  transition: 0.3s;
+}
+
+/* --- MODAL BASE (COMÚN PARA ÉXITO Y ADVERTENCIA) --- */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 42, 86, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  backdrop-filter: blur(10px);
+}
+
+.modal-confirmacion {
+  background: white;
+  padding: 50px 40px;
+  border-radius: 20px;
+  max-width: 450px;
+  width: 95%;
+  text-align: center;
+  border: none;
+}
+
+/* --- ESPECÍFICO: MODAL DE ÉXITO --- */
+.modal-icon-success {
+  font-size: 5rem;
+  color: #d4e157; /* Verde Lima CFD */
+  margin-bottom: 20px;
+}
+
+/* --- ESPECÍFICO: MODAL DE ADVERTENCIA (NUEVO) --- */
+.border-warning-cfd {
+  border: 4px solid #fb8c00 !important; /* Borde Naranja/Ámbar */
+}
+
+.modal-icon-warning {
+  font-size: 5rem;
+  color: #fb8c00; /* Color Ámbar */
+  margin-bottom: 20px;
+}
+
+/* --- CONTENEDOR DE NÚMERO DE RESERVA --- */
+.reserva-box {
+  background-color: #f7fafc;
+  border: 2px dashed #003d7e;
+  padding: 25px;
+  border-radius: 12px;
+  margin: 25px 0;
+}
+
+.reserva-numero {
+  color: #003d7e;
+  font-weight: 800;
+  font-size: 2.8rem;
+}
+
+/* Botón general dentro de modales */
+.btn-login-cfd {
+  background-color: #003d7e;
+  color: white;
+  border: none;
+  padding: 14px 30px;
+  border-radius: 12px;
+  font-weight: 600;
+  width: 100%;
+  transition: 0.3s;
+}
+
+.btn-login-cfd:hover {
+  background-color: #002a56;
+  transform: translateY(-2px);
+}
+
+/* Animación */
+@keyframes zoomIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.animate__zoomIn {
+  animation: zoomIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}

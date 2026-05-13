@@ -1,0 +1,109 @@
+/* src/Paginas/Nosotros/Nosotros.css */
+
+.nosotros-page {
+    background-color: var(--cfd-cool-grey);
+}
+
+.nosotros-header h1 {
+    text-shadow: 0 0 15px rgba(0, 86, 179, 0.2);
+    margin-bottom: 20px;
+}
+
+/* Estilo de las Tarjetas Interactivas */
+.nosotros-card {
+    background: white;
+    padding: 40px 30px;
+    border-radius: 20px;
+    height: 100%;
+    text-align: center;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border: 1px solid rgba(0, 86, 179, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.nosotros-card:hover {
+    transform: translateY(-15px);
+    box-shadow: 0 20px 40px rgba(0, 86, 179, 0.15);
+}
+
+/* Iconos con resplandor estilo Hazel Lab */
+.icon-box {
+    width: 70px;
+    height: 70px;
+    background: var(--cfd-blue);
+    color: white;
+    font-size: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 15px;
+    margin: 0 auto 25px;
+    box-shadow: 0 10px 20px rgba(0, 86, 179, 0.3);
+    transition: all 0.3s ease;
+}
+
+.nosotros-card:hover .icon-box {
+    transform: rotateY(360deg);
+    background: var(--cfd-turquoise);
+    box-shadow: 0 0 25px var(--cfd-turquoise);
+}
+
+.nosotros-card h3 {
+    color: var(--cfd-blue);
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+.nosotros-card p {
+    color: #555;
+    line-height: 1.6;
+}
+
+/* Efecto de borde de color según la sección */
+.mission { border-bottom: 5px solid var(--cfd-blue); }
+.vision { border-bottom: 5px solid var(--cfd-turquoise); }
+.quality { border-bottom: 5px solid var(--cfd-lime); }
+
+/* SECCIÓN TÉCNICA ACTUALIZADA: Azul Eléctrico Profundo */
+.technical-info {
+    /* Degradado basado en el azul corporativo */
+    background: linear-gradient(135deg, #003d7e 0%, var(--cfd-blue) 100%);
+    border-radius: 50px 50px 0 0;
+    margin-top: 50px;
+    padding: 60px 0;
+    box-shadow: 0 -15px 35px rgba(0, 86, 179, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Detalle visual: Línea superior en Amarillo Lima */
+.technical-info::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 15%;
+    right: 15%;
+    height: 3px;
+    background: var(--cfd-lime);
+    border-radius: 0 0 10px 10px;
+    opacity: 0.7;
+}
+
+.technical-info h2 {
+    color: var(--cfd-white);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.technical-info p {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* Resalte para las normativas técnicas */
+.technical-info strong {
+    color: var(--cfd-lime);
+    text-shadow: 0 0 8px rgba(212, 255, 0, 0.4);
+}
