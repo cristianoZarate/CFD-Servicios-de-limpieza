@@ -37,6 +37,9 @@ public class SecurityConfig {
                 .requestMatchers("/api/v1/auth/**").permitAll() // Login y Registro abiertos
                 .requestMatchers("/api/v1/servicios").permitAll() // Catálogo abierto
                 .anyRequest().authenticated() // Todo lo demás requiere Token
+                .requestMatchers("/swagger-ui/**").permitAll()// Permitir Swagger
+                .requestMatchers("/v3/api-docs/**").permitAll() 
+                .requestMatchers("/swagger-ui.html").permitAll()        
             )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
