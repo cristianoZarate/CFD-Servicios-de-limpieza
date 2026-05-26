@@ -36,10 +36,10 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/v1/auth/**").permitAll() // Login y Registro abiertos
                 .requestMatchers("/api/v1/servicios").permitAll() // Catálogo abierto
-                .anyRequest().authenticated() // Todo lo demás requiere Token
                 .requestMatchers("/swagger-ui/**").permitAll()// Permitir Swagger
                 .requestMatchers("/v3/api-docs/**").permitAll() 
-                .requestMatchers("/swagger-ui.html").permitAll()        
+                .requestMatchers("/swagger-ui.html").permitAll()  
+                .anyRequest().authenticated() // Todo lo demás requiere Token      
             )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
