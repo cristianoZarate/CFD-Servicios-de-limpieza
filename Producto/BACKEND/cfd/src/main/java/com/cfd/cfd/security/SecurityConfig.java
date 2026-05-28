@@ -39,7 +39,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            // 1. Vinculamos de manera explícita nuestro método de CORS con Spring Security
+  
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
@@ -51,7 +51,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/v1/disponibilidad/**").permitAll() 
                 // ----------------------------------------------------------------------------------------------
                 
-                // ◄--- ACTUALIZADO: Opción 2 activa. Otorga pase libre temporal al GET de usuarios para quitar el 403
+
                 .requestMatchers(HttpMethod.GET, "/api/v1/usuarios").permitAll()
                 
                 .requestMatchers("/swagger-ui/**").permitAll() // Permitir Swagger
@@ -65,7 +65,7 @@ public class SecurityConfig {
         return http.build();
     }
 
-    // 2. CONFIGURACIÓN GLOBAL DE CORS: Desbloquea la seguridad del navegador para React
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
