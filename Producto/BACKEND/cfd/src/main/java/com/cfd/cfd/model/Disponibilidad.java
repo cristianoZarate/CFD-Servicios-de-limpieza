@@ -7,16 +7,18 @@ import java.time.LocalTime;
 
 @Entity
 @Table(name = "disponibilidad")
-@Data
+@Data // Lombok generará los getters, setters, equals y hashcode de 'servicio' automáticamente
 public class Disponibilidad {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-//Si esta clase servicio cambiar a 
-// @ManyToOne @JoinColumn(name = "servicio_id") private Servicio servicio;
-    @Column(name = "servicio_id")
-    private Integer servicioId; 
+
+    // --- RELACIÓN CORREGIDA: Conexión relacional con la entidad Servicio ---
+    @ManyToOne
+    @JoinColumn(name = "servicio_id", nullable = false)
+    private Servicio servicio; 
+    // ----------------------------------------------------------------------
 
     private LocalDate fecha;
     

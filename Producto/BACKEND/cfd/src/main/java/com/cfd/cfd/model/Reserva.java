@@ -21,6 +21,11 @@ public class Reserva {
     @JoinColumn(name = "disponibilidad_id", nullable = false)
     private Disponibilidad disponibilidad;
 
+    
+    @ManyToOne
+    @JoinColumn(name = "servicio_id", nullable = false)
+    private CategoriaServicio servicio; 
+
     private String estado; // "PENDIENTE", "CONFIRMADA", "CANCELADA"
 
     @Column(name = "created_at")

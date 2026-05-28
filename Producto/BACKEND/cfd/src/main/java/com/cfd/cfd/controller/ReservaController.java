@@ -19,6 +19,15 @@ public class ReservaController {
     @Autowired
     private ReservaService reservaService;
 
+    // 1. OBTENER TODAS LAS RESERVAS (◄--- NUEVO ENDPOINT CRÍTICO AGREGADO PARA EL DASHBOARD ADMIN ---)
+    @GetMapping
+    public ResponseEntity<List<Reserva>> listarTodasLasReservas() {
+        // Busca todas las reservas almacenadas en la base de datos MySQL de forma general
+        List<Reserva> reservas = reservaService.obtenerTodasLasReservas(); 
+        return ResponseEntity.ok(reservas);
+    }
+
+    // 2. CREAR RESERVA (Público y Clientes)
     @PostMapping
     public ResponseEntity<?> crearReserva(@RequestBody ReservaRequestDTO dto) {
         try {
@@ -29,18 +38,17 @@ public class ReservaController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+
+    // 3. LISTAR HISTORIAL ESPECÍFICO DE UN USUARIO
     @GetMapping("/usuario/{id}")
     public List<Reserva> listarPorUsuario(@PathVariable Integer id) {
         return reservaService.obtenerPorUsuario(id);
     }
 
-    @PutMapping("/{id}/cancelar")
-    public ResponseEntity<?> cancelar(@PathVariable Integer id) {
-        try {
-            reservaService.cancelarReserva(id);
-            return ResponseEntity.ok("Reserva cancelada exitosamente");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
+    // 4. CANCELAR AGENDAMIENTO
+    @DeleteMapping("/{id}/cancelar") // 
+    public ResponseEntity<?> cancelarReserva(@PathVariable Integer id) {
+        reservaService.cancelarReserva(id); // Llama al método que limpia y descuenta el cupo
+        return ResponseEntity.ok("Reserva eliminada con éxito");
+}
 }

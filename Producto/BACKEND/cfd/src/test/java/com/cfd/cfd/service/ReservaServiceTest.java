@@ -51,7 +51,7 @@ public class ReservaServiceTest {
         when(usuarioRepository.findById(1)).thenReturn(Optional.of(usuarioMock));
         when(disponibilidadRepository.findById(10)).thenReturn(Optional.of(disponibilidadLlena));
 
-        // 2. EJECUCIÓN Y 3. VERIFICACIÓN
+        // 2. EJECUCIÓN Y VERIFICACIÓN
         Exception exception = assertThrows(RuntimeException.class, () -> {
             reservaService.procesarNuevaReserva(request);
         });

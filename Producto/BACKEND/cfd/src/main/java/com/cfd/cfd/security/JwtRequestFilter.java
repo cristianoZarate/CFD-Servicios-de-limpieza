@@ -29,13 +29,32 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         final String authorizationHeader = request.getHeader("Authorization");
+        
+        // Convertimos la URI a minúsculas para evitar problemas de descalce
+        final String requestURI = request.getRequestURI().toLowerCase();
+
+        // ◄--- REESTRUCTURADO: Paso libre exclusivo para controladores públicos ---
+        // Se elimina "usuarios" de esta lista para obligar la validación de tokens en la gestión de clientes
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ") || 
+            requestURI.contains("auth") || 
+            requestURI.contains("servicios") || 
+            requestURI.contains("reservas") || 
+            requestURI.contains("disponibilidad")) {
+            
+            // Delegamos la autorización final a las excepciones de SecurityConfig (.permitAll())
+            chain.doFilter(request, response); 
+            return; // Corta la ejecución del filtro de JWT de inmediato para evitar el error 403
+        }
 
         String username = null;
         String jwt = null;
 
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            jwt = authorizationHeader.substring(7);
+        // Procesa y valida el token JWT entrante si la ruta está protegida
+        jwt = authorizationHeader.substring(7);
+        try {
             username = jwtUtil.extractUsername(jwt);
+        } catch (Exception e) {
+            logger.warn("No se pudo extraer o decodificar el nombre de usuario desde el token JWT enviado.");
         }
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
@@ -48,6 +67,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
         }
+        
         chain.doFilter(request, response);
     }
 }

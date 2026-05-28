@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "usuarios")
-@Data // Lombok: genera getters, setters, toString, etc.
+@Data // Lombok: genera getters, setters, toString, etc. automáticamente
 @NoArgsConstructor // Constructor vacío
 @AllArgsConstructor // Constructor con todo
 public class Usuario {
@@ -19,6 +19,14 @@ public class Usuario {
 
     @Column(unique = true, nullable = false)
     private String correo;
+
+    // --- NUEVOS CAMPOS ADAPTADOS PARA EL FRONTEND ---
+    @Column(name = "telefono", length = 20, nullable = true)
+    private String telefono;
+
+    @Column(name = "direccion", length = 255, nullable = true)
+    private String direccion;
+    // ------------------------------------------------
 
     @Column(nullable = false)
     private String passwordHash;
