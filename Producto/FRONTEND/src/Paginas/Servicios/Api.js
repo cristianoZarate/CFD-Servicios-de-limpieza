@@ -28,12 +28,12 @@ API.interceptors.request.use(
 );
 
 
-// Llamada para cancelar/eliminar la reserva por ID usando la instancia segura API
+// Llamada para cancelar/ la reserva por ID usando la instancia segura API
 export const cancelarReservaApi = (id) => API.delete(`/reservas/${id}/cancelar`); 
 
 
 /**
- * Obtiene la lista de servicios activos desde el backend (Catálogo público)
+ * Obtiene la lista de servicios activos desde el backend 
  */
 export const getServicios = async () => {
   return await API.get("/servicios");
