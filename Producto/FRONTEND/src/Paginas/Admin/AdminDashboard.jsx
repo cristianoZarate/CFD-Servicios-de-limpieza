@@ -56,7 +56,7 @@ export function AdminDashboard() {
     cargarDatosReales();
   }, []);
 
-  // ◄--- ACTUALIZADO: Semántica enfocada en cancelación de cita ---
+  
   const handleCancelarCita = async (reservaId) => {
     const confirmar = window.confirm(
       "¿Está seguro de que desea cancelar este agendamiento? Esta acción liberará un cupo automáticamente en la base de datos."
