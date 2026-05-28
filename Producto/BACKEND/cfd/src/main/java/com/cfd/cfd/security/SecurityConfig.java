@@ -2,7 +2,7 @@ package com.cfd.cfd.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod; // ◄--- INCORPORADO: Permite filtrar las reglas por verbo HTTP
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -28,7 +28,7 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(); // Encripta contraseñas automáticamente
+        return new BCryptPasswordEncoder();
     }
 
     @Bean
@@ -39,25 +39,23 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-  
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/v1/auth/**").permitAll() // Login y Registro abiertos de forma nativa
-                
-                // --- GARANTÍA DE PASO LIBRE PARA ENDPOINTS PÚBLICOS DE LA AGENDA ---
+                // Endpoints públicos
+                .requestMatchers("/api/v1/auth/**").permitAll()
                 .requestMatchers("/api/v1/servicios/**").permitAll() 
                 .requestMatchers("/api/v1/reservas/**").permitAll()
                 .requestMatchers("/api/v1/disponibilidad/**").permitAll() 
-                // ----------------------------------------------------------------------------------------------
-                
-
                 .requestMatchers(HttpMethod.GET, "/api/v1/usuarios").permitAll()
                 
-                .requestMatchers("/swagger-ui/**").permitAll() // Permitir Swagger
+                // Documentación API (Swagger)
+                .requestMatchers("/swagger-ui/**").permitAll()
                 .requestMatchers("/v3/api-docs/**").permitAll() 
                 .requestMatchers("/swagger-ui.html").permitAll()  
-                .anyRequest().authenticated() // Otros módulos de administración profunda requieren Token      
+                
+                // Endpoints protegidos
+                .anyRequest().authenticated()      
             )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
@@ -65,19 +63,24 @@ public class SecurityConfig {
         return http.build();
     }
 
-
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        // Damos permiso explícito al origen local de tu frontend
-        configuration.setAllowedOrigins(List.of("http://localhost:5173", "http://127.0.0.1:5173")); 
+        
+        // Configuración de orígenes permitidos (CORS)
+        configuration.setAllowedOrigins(List.of(
+            "http://localhost:5173", 
+            "http://127.0.0.1:5173",
+            "https://cfd-servicios-de-limpieza.vercel.app",
+            "https://cfd-servicios-de-limpieza-i5qw96orm-fernando-za-s-projects.vercel.app"
+        )); 
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        // Habilitamos las cabeceras estándar de Content-Type y Authorization para JWT
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "Cache-Control"));
         configuration.setAllowCredentials(true);
         
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration); // Aplica el permiso a todos los endpoints del backend
+        source.registerCorsConfiguration("/**", configuration);
+        
         return source;
     }
 }
