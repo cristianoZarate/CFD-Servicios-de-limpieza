@@ -1,10 +1,10 @@
 // src/Paginas/Admin/AdminDashboard.jsx
 import React, { useState, useEffect } from "react"; 
 import { useNavigate } from "react-router-dom";
-import { getReservas, cancelarReservaApi } from "../Servicios/Api"; // ◄--- ACTUALIZADO: Importación con el nombre definitivo del servicio
+import { getReservas, cancelarReservaApi } from "../Servicios/Api"; // ◄--- CORREGIDO: Nombre de importación unificado
 import { AdminCalendario } from "./AdminCalendario"; 
-import { AdminClientes } from "./AdminClientes"; // ◄--- NUEVO: Componente del directorio de clientes
-import logo  from "../../assets/logo.png"; 
+import { AdminClientes } from "./AdminClientes"; 
+import logo from "../../assets/logo.png"; 
 import "./AdminDashboard.css";
 
 export function AdminDashboard() {
@@ -56,30 +56,27 @@ export function AdminDashboard() {
     cargarDatosReales();
   }, []);
 
-  // ◄--- NUEVA FUNCIÓN: Gatilla la eliminación relacional y descuenta cupos en el backend ---
-  const handleEliminarCita = async (reservaId) => {
+  // ◄--- ACTUALIZADO: Semántica enfocada en cancelación de cita ---
+  const handleCancelarCita = async (reservaId) => {
     const confirmar = window.confirm(
-      "¿Está seguro de que desea eliminar este agendamiento? Esta acción liberará un cupo automáticamente en la base de datos."
+      "¿Está seguro de que desea cancelar este agendamiento? Esta acción liberará un cupo automáticamente en la base de datos."
     );
 
     if (!confirmar) return;
 
     try {
-      // Invocación al servicio Axios con el nuevo nombre de función
       await eliminarReservaApi(reservaId);
       
       alert("Agendamiento cancelado con éxito. Cupo liberado en MySQL.");
       
-      // Seteamos el nuevo estado local removiendo el elemento de inmediato
       setCitas((prev) => prev.filter((cita) => cita.id !== reservaId));
       
-      // Si la fila que estaba expandida es la que se eliminó, reseteamos el colapsable
       if (filaExpandida === reservaId) {
         setFilaExpandida(null);
       }
     } catch (error) {
-      console.error("Error al intentar eliminar la reserva desde el panel:", error);
-      alert("No se pudo procesar la eliminación. Verifica que el endpoint @DeleteMapping esté corriendo.");
+      console.error("Error al intentar cancelar la reserva desde el panel:", error);
+      alert("No se pudo procesar la cancelación. Verifica que el backend esté corriendo.");
     }
   };
 
@@ -114,7 +111,6 @@ export function AdminDashboard() {
           >
             <i className="bi bi-calendar-event"></i> Calendario
           </button>
-          {/* ◄--- ACTUALIZADO: Botón Clientes conmutando dinámicamente la sección --- */}
           <button 
             className={`nav-link-admin ${seccionActiva === "clientes" ? "active" : ""}`}
             onClick={() => setSeccionActiva("clientes")}
@@ -219,58 +215,65 @@ export function AdminDashboard() {
                           </tr>
                         </thead>
                         <tbody>
-                          {citas.map((cita) => (
-                            <React.Fragment key={cita.id || Math.random()}>
-                              <tr 
-                                onClick={() => toggleFila(cita.id)} 
-                                style={{ cursor: "pointer" }}
-                                className={filaExpandida === cita.id ? "table-active" : ""}
-                              >
-                                <td className="fw-bold">
-                                  <i className={`bi bi-chevron-${filaExpandida === cita.id ? 'down' : 'right'} me-2 text-primary small`}></i>
-                                  {cita.cliente}
-                                </td>
-                                <td><span className="badge bg-info text-dark">{cita.servicio}</span></td>
-                                <td>{cita.fecha}</td>
-                                <td>{cita.hora}</td>
-                                <td>
-                                  <span className={`status-pill ${cita.estado?.toLowerCase()}`}>
-                                    {cita.estado}
-                                  </span>
-                                </td>
-                                <td className="text-center" onClick={(e) => e.stopPropagation()}>
-                                  <button className="btn btn-icon-edit me-2" title="Editar fila">
-                                    <i className="bi bi-pencil"></i>
-                                  </button>
-                                  <button 
-                                    className="btn btn-icon-delete" 
-                                    title="Eliminar agendamiento"
-                                    onClick={() => handleEliminarCita(cita.id)}
-                                  >
-                                    <i className="bi bi-trash"></i>
-                                  </button>
-                                </td>
-                              </tr>
-
-                              {/* Sección colapsable que despliega los datos reales cargados de la base de datos */}
-                              {filaExpandida === cita.id && (
-                                <tr className="table-light animate__animated animate__fadeIn">
-                                  <td colSpan="6" className="p-3 bg-light border-start border-primary border-4">
-                                    <div className="row g-3 px-3">
-                                      <div className="col-md-6">
-                                        <span className="text-muted d-block small fw-bold">NÚMERO TELEFÓNICO</span>
-                                        <span className="text-dark fw-bold"><i className="bi bi-telephone me-2 text-secondary"></i>{cita.telefono}</span>
-                                      </div>
-                                      <div className="col-md-6">
-                                        <span className="text-muted d-block small fw-bold">DIRECCIÓN DE TRABAJO</span>
-                                        <span className="text-dark fw-bold"><i className="bi bi-geo-alt me-2 text-secondary"></i>{cita.direccion}</span>
-                                      </div>
-                                    </div>
+                          {citas.map((cita) => {
+                            const isExpandida = filaExpandida === cita.id;
+                            return (
+                              <React.Fragment key={cita.id || Math.random()}>
+                                <tr 
+                                  onClick={() => toggleFila(cita.id)} 
+                                  style={{ cursor: "pointer" }}
+                                  className={isExpandida ? "table-active" : ""}
+                                >
+                                  <td className="fw-bold">
+                                    <i className={`bi bi-chevron-${isExpandida ? 'down' : 'right'} me-2 text-primary small`}></i>
+                                    {cita.cliente}
+                                  </td>
+                                  <td><span className="badge bg-info text-dark">{cita.servicio}</span></td>
+                                  <td>{cita.fecha}</td>
+                                  <td>{cita.hora}</td>
+                                  <td>
+                                    <span className={`status-pill ${cita.estado?.toLowerCase()}`}>
+                                      {cita.estado}
+                                    </span>
+                                  </td>
+                                  <td className="text-center" onClick={(e) => e.stopPropagation()}>
+                                    <button className="btn btn-icon-edit me-2" title="Editar fila">
+                                      <i className="bi bi-pencil"></i>
+                                    </button>
+                                    <button 
+                                      className="btn btn-icon-cancel" 
+                                      title="Cancelar agendamiento (Liberar cupo)"
+                                      onClick={() => handleCancelarCita(cita.id)}
+                                    >
+                                      <i className="bi bi-calendar-x-fill"></i>
+                                    </button>
                                   </td>
                                 </tr>
-                              )}
-                            </React.Fragment>
-                          ))}
+
+                                {/* Fila colapsable perfectamente contenida dentro de la estructura de la tabla */}
+                                {isExpandida && (
+                                  <tr className="table-light animate__animated animate__fadeIn">
+                                    <td colSpan="6" className="p-3 bg-light border-start border-primary border-4">
+                                      <div className="row g-3 px-3">
+                                        <div className="col-md-6">
+                                          <span className="text-muted d-block small fw-bold">NÚMERO TELEFÓNICO</span>
+                                          <span className="text-dark fw-bold">
+                                            <i className="bi bi-telephone me-2 text-secondary"></i>{cita.telefono}
+                                          </span>
+                                        </div>
+                                        <div className="col-md-6">
+                                          <span className="text-muted d-block small fw-bold">DIRECCIÓN DE TRABAJO</span>
+                                          <span className="text-dark fw-bold">
+                                            <i className="bi bi-geo-alt me-2 text-secondary"></i>{cita.direccion}
+                                          </span>
+                                        </div>
+                                      </div>
+                                    </td>
+                                  </tr>
+                                )}
+                              </React.Fragment>
+                            );
+                          })}
                         </tbody>
                       </table>
                     </div>
@@ -281,7 +284,7 @@ export function AdminDashboard() {
           ) : seccionActiva === "calendario" ? (
             <AdminCalendario />
           ) : (
-            <AdminClientes /> /* ◄--- NUEVO: Renderizado de la pantalla de clientes de forma modular --- */
+            <AdminClientes />
           )}
         </div>
       </main>
