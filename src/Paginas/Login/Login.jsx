@@ -36,21 +36,24 @@ export function Login() {
       
       const response = await loginUsuario(correo, clave);
       
-      // El backend de Spring Boot retorna un Map únicamente con el campo "token"
-      const { token } = response.data;
+      // Extraemos el token y los datos reales del usuario devueltos por Gabriel
+      const { token, usuario } = response.data;
 
       // Guardamos la "pulsera VIP" en el almacenamiento del navegador
       localStorage.setItem("token", token);
       
-      // Fabricamos un objeto de sesión temporal con el correo ingresado.
-      // Esto nos permite mantener viva tu lógica de roles en el Navbar y la UI.
+      // Mantenemos la normalización por seguridad en la interfaz
       const correoNormalizado = correo.toLowerCase();
       const esAdmin = correoNormalizado.endsWith("@cfdservicios.cl");
       
+      // ◄--- CORREGIDO: Sincronización estricta de nombres de atributos Front/Back ---
       const usuarioLogueado = {
-        correo: correoNormalizado,
-        role: esAdmin ? "admin" : "cliente",
-        id: 1 // ID temporal para las pruebas del módulo de agendamiento
+        id: usuario?.id || response.data.usuarioId, 
+        nombre: usuario?.nombre || "Usuario CFD",
+        correo: usuario?.correo || usuario?.email || correoNormalizado,
+        email: usuario?.correo || usuario?.email || correoNormalizado, // Respaldo para componentes antiguos
+        rol: usuario?.rol || usuario?.role || (esAdmin ? "admin" : "cliente"),
+        role: usuario?.rol || usuario?.role || (esAdmin ? "admin" : "cliente") // Duplicado para evitar roturas en Navbar histórico
       };
       
       localStorage.setItem("usuarioLogueado", JSON.stringify(usuarioLogueado));
@@ -58,18 +61,15 @@ export function Login() {
       // Sincronizamos el estado de la app de forma global
       window.dispatchEvent(new Event('usuarioLogueado'));
       
-      // --- LÓGICA DE REDIRECCIÓN ---
-      if (esAdmin) {
-        // Acceso administrativo: Dashboard de gestión
+      // --- LÓGICA DE REDIRECCIÓN EN BASE AL ROL REAL ---
+      if (usuarioLogueado.rol === "admin" || esAdmin) {
         navigate("/admin"); 
       } else {
-        // Acceso cliente: Vista principal de reservas
         navigate("/"); 
       }
       
     } catch (err) {
       console.error("Error en login:", err);
-      // Capturamos el error 401 que lanza el backend cuando la clave o correo no coinciden
       if (err.response && err.response.status === 401) {
         setError("El correo o la contraseña son incorrectos.");
       } else {

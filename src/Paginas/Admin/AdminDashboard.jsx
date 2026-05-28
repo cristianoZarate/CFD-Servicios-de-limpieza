@@ -1,7 +1,7 @@
 // src/Paginas/Admin/AdminDashboard.jsx
-import React, { useState, useEffect } from "react"; // ◄--- ACTUALIZADO: Importación de React para usar Fragment
+import React, { useState, useEffect } from "react"; 
 import { useNavigate } from "react-router-dom";
-import { getReservas } from "../Servicios/Api"; 
+import { getReservas, cancelarReservaApi } from "../Servicios/Api"; // ◄--- ACTUALIZADO: Importación con el nombre definitivo del servicio
 import { AdminCalendario } from "./AdminCalendario"; 
 import logo  from "../../assets/logo.png"; 
 import "./AdminDashboard.css";
@@ -15,38 +15,72 @@ export function AdminDashboard() {
   // Estado para controlar qué fila de la tabla se encuentra expandida para ver los detalles de contacto
   const [filaExpandida, setFilaExpandida] = useState(null);
 
-  useEffect(() => {
-    const cargarDatosReales = async () => {
-      try {
-        setLoading(true);
-        const respuesta = await getReservas();
-        
-        if (respuesta.data && respuesta.data.length > 0) {
-          const citasFormateadas = respuesta.data.map((res) => ({
+  // Mantenemos la función de consulta aislada para recargar la grilla si es necesario
+  const cargarDatosReales = async () => {
+    try {
+      setLoading(true);
+      const respuesta = await getReservas();
+      
+      if (respuesta.data && respuesta.data.length > 0) {
+        const citasFormateadas = respuesta.data.map((res) => {
+          // Concatenamos de forma segura Nombre y Apellido desde el objeto Usuario relacional
+          const nombreCompleto = res.usuario 
+            ? `${res.usuario.nombre || ''} ${res.usuario.apellido || ''}`.trim() 
+            : `Cliente #${res.usuarioId || 'Asignado'}`;
+
+          return {
             id: res.id,
-            cliente: res.usuario?.nombre || `Cliente #${res.usuarioId || 'Asignado'}`,
-            servicio: res.disponibilidad?.servicio?.nombre || "Servicio Contratado",
+            cliente: nombreCompleto || "Usuario CFD",
+            servicio: res.servicio?.nombre || res.disponibilidad?.servicio?.nombre || "Servicio Contratado",
             fecha: res.disponibilidad?.fecha || "Ver en BD",
             hora: res.disponibilidad?.horaInicio ? res.disponibilidad.horaInicio.substring(0, 5) : "00:00",
             estado: res.estado || "Confirmado",
             telefono: res.usuario?.telefono || "No registrado",
             direccion: res.usuario?.direccion || "Dirección no provista"
-          }));
-          setCitas(citasFormateadas);
-        } else {
-          // Si no hay datos en MySQL, la lista queda en blanco de forma fidedigna
-          setCitas([]);
-        }
-      } catch (error) {
-        console.error("Error al conectar con /reservas, manteniendo panel limpio:", error);
-        setCitas([]); // Si la API falla, no inventamos datos; se muestra vacío
-      } finally {
-        setLoading(false);
+          };
+        });
+        setCitas(citasFormateadas);
+      } else {
+        setCitas([]);
       }
-    };
+    } catch (error) {
+      console.error("Error al conectar con /reservas, manteniendo panel limpio:", error);
+      setCitas([]); 
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     cargarDatosReales();
   }, []);
+
+  // ◄--- NUEVA FUNCIÓN: Gatilla la eliminación relacional y descuenta cupos en el backend ---
+  const handleEliminarCita = async (reservaId) => {
+    const confirmar = window.confirm(
+      "¿Está seguro de que desea eliminar este agendamiento? Esta acción liberará un cupo automáticamente en la base de datos."
+    );
+
+    if (!confirmar) return;
+
+    try {
+      // Invocación al servicio Axios con el nuevo nombre de función
+      await cancelarReservaApi(reservaId);
+      
+      alert("Agendamiento cancelado con éxito. Cupo liberado en MySQL.");
+      
+      // Seteamos el nuevo estado local removiendo el elemento de inmediato
+      setCitas((prev) => prev.filter((cita) => cita.id !== reservaId));
+      
+      // Si la fila que estaba expandida es la que se eliminó, reseteamos el colapsable
+      if (filaExpandida === reservaId) {
+        setFilaExpandida(null);
+      }
+    } catch (error) {
+      console.error("Error al intentar eliminar la reserva desde el panel:", error);
+      alert("No se pudo procesar la eliminación. Verifica que el endpoint @DeleteMapping esté corriendo.");
+    }
+  };
 
   const handleLogout = () => {
     localStorage.removeItem("usuarioLogueado");
@@ -176,7 +210,6 @@ export function AdminDashboard() {
                         </thead>
                         <tbody>
                           {citas.map((cita) => (
-                            /* --- CORREGIDO: Reemplazamos el tr anidado inválido por un React.Fragment limpio --- */
                             <React.Fragment key={cita.id || Math.random()}>
                               <tr 
                                 onClick={() => toggleFila(cita.id)} 
@@ -199,7 +232,12 @@ export function AdminDashboard() {
                                   <button className="btn btn-icon-edit me-2" title="Editar fila">
                                     <i className="bi bi-pencil"></i>
                                   </button>
-                                  <button className="btn btn-icon-delete" title="Eliminar fila">
+                                  {/* ◄--- ACTUALIZADO: El botón del basurero naranja ahora invoca a handleEliminarCita --- */}
+                                  <button 
+                                    className="btn btn-icon-delete" 
+                                    title="Eliminar agendamiento"
+                                    onClick={() => handleEliminarCita(cita.id)}
+                                  >
                                     <i className="bi bi-trash"></i>
                                   </button>
                                 </td>

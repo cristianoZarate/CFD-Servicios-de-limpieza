@@ -1,10 +1,10 @@
 // src/Paginas/Servicios/Api.js
 import axios from "axios";
 
-// Ajustado a la ruta base real del backend de Gabriel (/api/v1)
+// Ruta base real del backend (/api/v1)
 const API_URL = "http://localhost:8080/api/v1"; 
 
-// Creamos una instancia centralizada de Axios para configurar cabeceras fácilmente
+// Instancia centralizada de Axios para configurar cabeceras fácilmente
 export const API = axios.create({
   baseURL: API_URL,
   headers: {
@@ -12,8 +12,7 @@ export const API = axios.create({
   },
 });
 
-// Interceptor de peticiones: Inyecta el Token de seguridad (la "pulsera VIP") 
-// automáticamente en los headers de cada petición si el usuario está logueado
+// Interceptor de peticiones: Inyecta el Token de seguridad automáticamente
 API.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("token");
@@ -27,8 +26,13 @@ API.interceptors.request.use(
   }
 );
 
+
+// Llamada para cancelar/eliminar la reserva por ID usando la instancia segura API
+export const cancelarReservaApi = (id) => API.delete(`/reservas/${id}/cancelar`); 
+
+
 /**
- * Obtiene la lista de servicios desde el backend
+ * Obtiene la lista de servicios activos desde el backend (Catálogo público)
  */
 export const getServicios = async () => {
   return await API.get("/servicios");
@@ -36,8 +40,8 @@ export const getServicios = async () => {
 
 /**
  * Procesa el inicio de sesión del usuario
- * @param {string} correo - Correo corporativo o gmail
- * @param {string} password - Contraseña del usuario
+ * @param {string} correo - Correo ingresado
+ * @param {string} password - Contraseña ingresada
  */
 export const loginUsuario = async (correo, password) => {
   return await API.post("/auth/login", { 
@@ -48,42 +52,46 @@ export const loginUsuario = async (correo, password) => {
 
 /**
  * REGISTRO FORMAL (Usado por la pantalla "Crear Cuenta")
- * Apunta al AuthController original de Gabriel para registrar usuarios que iniciarán sesión.
- * @param {Object} datosUsuario - Objeto con nombre, correo, telefono, direccion, passwordHash, etc.
+ * @param {Object} datosUsuario - Objeto unificado del cliente
  */
 export const registrarUsuario = async (datosUsuario) => {
-  // ◄--- RESTAURADO: Vuelve a apuntar al flujo abierto de autenticación de Gabriel
   return await API.post("/auth/registro", datosUsuario);
 };
 
 /**
- * REGISTRO MANUAL / INVITADO (Opcional)
- * Apunta al UsuarioController independiente para registrar directo a la base de datos sin generar tokens.
+ * REGISTRO MANUAL / INVITADO (Estandarizado)
+ * Apunta al endpoint raíz POST de usuarios de forma limpia
+ * @param {Object} datosUsuario - Objeto con los datos del formulario de la Agenda
  */
 export const registrarUsuarioManual = async (datosUsuario) => {
-  return await API.post("/usuarios/registro-manual", datosUsuario);
+  return await API.post("/usuarios", datosUsuario);
+};
+
+/**
+ * DIRECTORIO DE CLIENTES
+ * Recupera la lista completa de usuarios registrados para el panel de administración
+ */
+export const getUsuarios = async () => {
+  return await API.get("/usuarios");
 };
 
 /**
  * Crea una nueva solicitud de agendamiento (Envía el ReservaRequestDTO)
- * @param {Object} reservaDTO - Objeto unificado conteniendo { usuarioId, disponibilidadId }
+ * @param {Object} reservaDTO - Objeto conteniendo { usuarioId, disponibilidadId, servicioId }
  */
 export const crearReserva = async (reservaDTO) => {
-  // Ahora recibe el DTO completo y estructurado directamente desde la Agenda
   return await API.post("/reservas", reservaDTO);
 };
 
 /**
  * Inserta un bloque de disponibilidad dinámico directamente en MySQL
- * @param {Object} datosDisponibilidad - { servicioId, fecha, horaInicio, horaFin, cuposTotales, cuposOcupados }
  */
 export const crearDisponibilidad = async (datosDisponibilidad) => {
   return await API.post("/disponibilidad", datosDisponibilidad);
 };
 
 /**
- * Recupera la lista completa de reservas reales desde la base de datos
- * Ideal para listar las citas en la sección de gestión del Dashboard Administrativo
+ * Recupera la lista completa de reservas reales desde la base de datos (Dashboard Admin)
  */
 export const getReservas = async () => {
   return await API.get("/reservas");

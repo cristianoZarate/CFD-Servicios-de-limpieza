@@ -1,7 +1,7 @@
 // src/Paginas/Agenda/Agenda.jsx
 import { useState, useEffect } from 'react';
 import Calendar from 'react-calendar';
-import axios from 'axios'; // O tu cliente axios directo
+import axios from 'axios'; // Importación estándar para compilación limpia en Vite
 import { crearReserva, loginUsuario } from '../Servicios/Api'; 
 import 'react-calendar/dist/Calendar.css';
 import './Agenda.css';
@@ -31,7 +31,7 @@ export function Agenda() {
     { id: "3", nombre: "Sanitización / Aseo Industrial", icono: "bi-shield-shaded" }
   ];
 
-  // ◄--- EFFECT: Consulta y siembra de forma inteligente las horas en la BD ---
+  // EFFECT: Consulta dinámicamente las horas reales desde la base de datos
   useEffect(() => {
     const cargarHorariosReales = async () => {
       try {
@@ -86,7 +86,9 @@ export function Agenda() {
           localStorage.setItem("token", resLogin.data.token);
           localStorage.setItem("usuarioLogueado", JSON.stringify(resLogin.data.usuario));
           window.dispatchEvent(new Event('usuarioLogueado'));
-          usuarioIdFinal = resLogin.data.usuario?.id;
+          
+          // Captura el ID desde la sub-llave que retorna el AuthController de Gabriel
+          usuarioIdFinal = resLogin.data.usuario?.id || resLogin.data.usuario?.usuarioId;
           setOpcionIngreso("logged");
         } catch (errLog) {
           setError("Credenciales inválidas. Inténtalo de nuevo o crea una cuenta.");
@@ -94,9 +96,12 @@ export function Agenda() {
           return;
         }
       } else {
-        // Flujo directo si ya inició sesión previamente
+        // Flujo directo si ya inició sesión previamente (Extrae la ID dinámica de la sesión real)
         const sesion = JSON.parse(localStorage.getItem("usuarioLogueado"));
-        usuarioIdFinal = sesion?.id;
+        
+        // ◄--- CORREGIDO: Extrae de forma segura el ID mapeando múltiples nomenclaturas ---
+        usuarioIdFinal = sesion?.id || sesion?.usuarioId;
+        
         if (!usuarioIdFinal) {
           setError("Tu sesión ha expirado. Por favor ingresa tus datos nuevamente.");
           setOpcionIngreso("");
@@ -105,10 +110,11 @@ export function Agenda() {
         }
       }
 
-      // Envia de forma limpia el DTO relacional con ambos IDs confirmados
+      // ◄--- BLINDADO: Conversión explícita a entero base 10 para evitar un envío nulo o string erróneo ---
       const respuesta = await crearReserva({
-        usuarioId: usuarioIdFinal,
-        disponibilidadId: disponibilidadIdReal 
+        usuarioId: parseInt(usuarioIdFinal, 10),
+        disponibilidadId: parseInt(disponibilidadIdReal, 10),
+        servicioId: parseInt(servicioSeleccionado, 10)
       });
 
       const idReservaDB = respuesta.data.id || Math.floor(1000 + Math.random() * 9000);
@@ -238,7 +244,7 @@ export function Agenda() {
 
                 {error && <div className="alert alert-danger py-2 text-center small mb-3">{error}</div>}
 
-                {/* ◄--- RENDERIZADO PURGADO: Pasarela exclusiva para Loguearse o ir a Crear Cuenta --- */}
+                {/* Pasarela exclusiva para Loguearse o ir a Crear Cuenta */}
                 {opcionIngreso === "" && (
                   <div className="text-center py-3">
                     <h6 className="fw-bold text-secondary mb-4">Para confirmar tu agendamiento, debes iniciar sesión</h6>

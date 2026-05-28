@@ -10,8 +10,19 @@ export function Navbar() {
 
   useEffect(() => {
     const cargarUsuario = () => {
-      const storedUser = JSON.parse(localStorage.getItem("usuarioLogueado"));
-      setUsuario(storedUser || null);
+      try {
+        const rawUser = localStorage.getItem("usuarioLogueado");
+        
+        // Verificación estricta y segura antes de usar JSON.parse
+        if (rawUser && rawUser !== "undefined" && rawUser !== "null") {
+          setUsuario(JSON.parse(rawUser));
+        } else {
+          setUsuario(null);
+        }
+      } catch (e) {
+        console.error("Error al parsear el usuario del LocalStorage:", e);
+        setUsuario(null);
+      }
     };
 
     cargarUsuario();
@@ -32,10 +43,10 @@ export function Navbar() {
     navigate("/");
   };
 
-  // LÓGICA DE ADMIN ACTUALIZADA: 
-  // Se activa por correo corporativo o por rol en la base de datos
+  // LÓGICA DE ADMIN: Se activa por correo corporativo o por rol en la base de datos
   const esAdmin = usuario && (
-    usuario.email?.toLowerCase().endsWith("@cfdservicios.cl") || 
+    usuario.correo?.toLowerCase().endsWith("@cfdservicios.cl") || 
+    ["administrador", "admin"].includes(usuario.rol?.toLowerCase()) ||
     ["administrador", "admin"].includes(usuario.role?.toLowerCase())
   );
 
@@ -71,7 +82,7 @@ export function Navbar() {
               <Link className="nav-link nav-custom-link" to="/nosotros">NOSOTROS</Link>
             </li>
             
-            {/* OPCIÓN ADMIN: Solo aparece si el correo es @cfdservicios.cl */}
+            {/* OPCIÓN ADMIN */}
             {esAdmin && (
               <li className="nav-item">
                 <Link className="nav-link fw-bold text-primary ms-lg-2" to="/admin">
@@ -89,12 +100,12 @@ export function Navbar() {
                   data-bs-toggle="dropdown"
                 >
                   <div className="avatar-mini me-2">
-                    {usuario.username?.charAt(0).toUpperCase() || "U"}
+                    {usuario.nombre?.charAt(0).toUpperCase() || "U"}
                   </div>
-                  {usuario.username}
+                  {usuario.nombre || "Cliente"}
                 </button>
                 <ul className="dropdown-menu dropdown-menu-end shadow border-0 mt-2">
-                  <li><h6 className="dropdown-header">Hola, {usuario.username}</h6></li>
+                  <li><h6 className="dropdown-header">Hola, {usuario.nombre}</h6></li>
                   {esAdmin && <li><Link className="dropdown-item fw-bold" to="/admin">Panel de Citas</Link></li>}
                   <li><Link className="dropdown-item" to="/perfil">Mi Perfil</Link></li>
                   <li><hr className="dropdown-divider" /></li>
@@ -102,7 +113,7 @@ export function Navbar() {
                     <button className="dropdown-item text-danger fw-bold" onClick={handleLogout}>
                       Cerrar Sesión
                     </button>
-                  </li>
+                  </li> {/* ◄--- FIXED: Etiqueta li cerrada correctamente */}
                 </ul>
               </li>
             ) : (
