@@ -113,7 +113,7 @@ export function Navbar() {
                     <button className="dropdown-item text-danger fw-bold" onClick={handleLogout}>
                       Cerrar Sesión
                     </button>
-                  </li> {/* ◄--- FIXED: Etiqueta li cerrada correctamente */}
+                  </li> 
                 </ul>
               </li>
             ) : (
