@@ -1,0 +1,10 @@
+Connection Name: CFD Railway
+Hostname: gondola.proxy.rlwy.net
+Port: 23439
+Username: root
+
+store in vault
+password AWRywuwQbcCcFnRxfJboHyjRZtBQGqzl
+
+url front
+cfd-servicios-de-limpieza-production.up.railway.app

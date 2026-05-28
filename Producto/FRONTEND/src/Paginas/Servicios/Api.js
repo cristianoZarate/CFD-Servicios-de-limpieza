@@ -2,7 +2,8 @@
 import axios from "axios";
 
 // Ruta base real del backend (/api/v1)
-const API_URL = "http://localhost:8080/api/v1"; 
+//const API_URL = "http://localhost:8080/api/v1"; 
+const API_URL = "https://cfd-servicios-de-limpieza-production.up.railway.app/api/v1"; 
 
 // Instancia centralizada de Axios para configurar cabeceras fácilmente
 export const API = axios.create({
