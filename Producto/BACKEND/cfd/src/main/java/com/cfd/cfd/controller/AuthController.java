@@ -15,7 +15,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/auth")
-@CrossOrigin(origins = "*") // Para que React se conecte sin problemas de CORS
+@CrossOrigin(origins = "*") 
 public class AuthController {
 
     @Autowired
@@ -30,15 +30,14 @@ public class AuthController {
     @Autowired
     private JwtUtil jwtUtil;
 
-    // 1. ENDPOINT DE REGISTRO: Modificado para forzar rol por defecto y evitar valores NULL
+
     @PostMapping("/registro")
     public ResponseEntity<?> registrar(@RequestBody Usuario usuario) {
         if (usuarioRepository.findByCorreo(usuario.getCorreo()).isPresent()) {
             return ResponseEntity.badRequest().body("El correo ya está registrado");
         }
         
-        // ◄--- NUEVO CONTROL MODIFICADO ---
-        // Si el rol viene vacío o null desde el frontend, le asignamos "cliente" por defecto automáticamente.
+        // --- GARANTÍA DE ROL POR DEFECTO: Si el cliente no especifica un rol, se le asigna "cliente"
         
         if (usuario.getRol() == null || usuario.getRol().trim().isEmpty()) {
             usuario.setRol("cliente");
@@ -51,7 +50,7 @@ public class AuthController {
         return ResponseEntity.ok("Usuario registrado exitosamente");
     }
 
-    // 2. ENDPOINT DE LOGIN: (Se mantiene intacto e impecable)
+    //  ENDPOINT DE LOGIN
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Map<String, String> loginRequest) {
         try {
@@ -75,7 +74,7 @@ public class AuthController {
             usuarioInfo.put("id", usuarioReal.getId());
             usuarioInfo.put("nombre", usuarioReal.getNombre());
             usuarioInfo.put("correo", usuarioReal.getCorreo());
-            usuarioInfo.put("rol", usuarioReal.getRol()); // Ya nunca más será NULL gracias al cambio superior
+            usuarioInfo.put("rol", usuarioReal.getRol()); 
             
             response.put("usuario", usuarioInfo);
             
