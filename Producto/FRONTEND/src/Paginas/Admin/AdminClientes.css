@@ -1,0 +1,57 @@
+/* src/Paginas/Admin/AdminClientes.css */
+
+/* Tarjeta KPI personalizada para Clientes */
+.card-kpi.kpi-purple {
+  background: white;
+  border-left: 5px solid #6f42c1; /* Color púrpura corporativo */
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  display: flex;
+  align-items: center;
+}
+
+.card-kpi.kpi-purple .kpi-icon {
+  font-size: 2.5rem;
+  color: #6f42c1;
+  margin-right: 1.25rem;
+  background-color: #f1ecf9;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.card-kpi.kpi-purple .kpi-data h6 {
+  margin: 0;
+  color: #6c757d;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Ajustes de tipografía para calzar con la tabla del Dashboard */
+.text-cfd-blue {
+  color: #1a365d !important; /* Azul marino de CFD Servicios */
+}
+
+.table th {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #4a5568;
+  font-weight: 700;
+  padding: 12px 16px;
+}
+
+.table td {
+  padding: 14px 16px;
+  font-size: 0.9rem;
+  color: #2d3748;
+}
+
+.table-hover tbody tr:hover {
+  background-color: rgba(111, 66, 193, 0.03) !important; /* Sutil hover púrpura */
+}

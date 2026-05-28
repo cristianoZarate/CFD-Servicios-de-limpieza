@@ -1,0 +1,202 @@
+/* Variables de Color de CFD */
+:root {
+  --cfd-dark-blue: #003d7e;
+  --cfd-light-blue: #0056b3;
+  --cfd-lime: #d4e157;
+  --sidebar-width: 260px;
+  --topbar-height: 70px;
+}
+
+/* Estructura Principal */
+.admin-wrapper {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f4f7f6; /* Gris muy claro para que resalten las cards */
+}
+
+/* Sidebar */
+.admin-sidebar {
+  width: var(--sidebar-width);
+  background-color: var(--cfd-dark-blue);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  height: 100vh;
+  z-index: 1000;
+  box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar-header {
+  padding: 25px;
+  text-align: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-nav {
+  flex-grow: 1;
+  padding: 20px 0;
+}
+
+.nav-link-admin {
+  width: 100%;
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  padding: 12px 25px;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: all 0.3s ease;
+  font-size: 0.95rem;
+}
+
+.nav-link-admin i {
+  font-size: 1.2rem;
+}
+
+.nav-link-admin:hover, 
+.nav-link-admin.active {
+  color: white;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-left: 4px solid var(--cfd-lime);
+}
+
+.sidebar-footer {
+  padding: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Contenido Principal */
+.admin-main-content {
+  flex-grow: 1;
+  margin-left: var(--sidebar-width);
+  width: calc(100% - var(--sidebar-width));
+}
+
+.admin-topbar {
+  height: var(--topbar-height);
+  background: white;
+  border-bottom: 1px solid #e0e0e0;
+  position: sticky;
+  top: 0;
+  z-index: 999;
+}
+
+/* Cards KPI */
+.card-kpi {
+  background: white;
+  padding: 25px;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: none;
+  margin-bottom: 20px;
+}
+
+.card-kpi:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.kpi-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  margin-right: 20px;
+}
+
+/* Colores específicos de KPIs */
+.kpi-blue .kpi-icon { background: rgba(0, 61, 126, 0.1); color: var(--cfd-dark-blue); }
+.kpi-orange .kpi-icon { background: rgba(255, 152, 0, 0.1); color: #fb8c00; }
+.kpi-green .kpi-icon { background: rgba(76, 175, 80, 0.1); color: #43a047; }
+
+.kpi-data h6 {
+  color: #757575;
+  margin: 0;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+}
+
+/* Tabla */
+.text-cfd-blue {
+  color: var(--cfd-dark-blue);
+}
+
+.table thead th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  color: #616161;
+  padding: 15px;
+  border-top: none;
+}
+
+.table tbody td {
+  padding: 15px;
+  color: #424242;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+/* Status Pills */
+.status-pill {
+  padding: 6px 14px;
+  border-radius: 50px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  display: inline-block;
+  text-align: center;
+  min-width: 100px;
+}
+
+.status-pill.pendiente { background-color: #fff8e1; color: #ff8f00; }
+.status-pill.confirmado { background-color: #e8f5e9; color: #2e7d32; }
+.status-pill.finalizado { background-color: #eceff1; color: #455a64; }
+
+/* Botones de Acción en Tabla */
+.btn-icon-edit {
+  background: #e3f2fd;
+  color: #1976d2;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 8px;
+  transition: 0.2s;
+}
+
+.btn-icon-delete {
+  background: #ffeeb3; /* Un tono crema/rojizo suave */
+  color: #d32f2f;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 8px;
+  transition: 0.2s;
+}
+
+.btn-icon-edit:hover { background: #1976d2; color: white; }
+.btn-icon-delete:hover { background: #d32f2f; color: white; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .admin-sidebar {
+    width: 70px;
+  }
+  .sidebar-header h4, .nav-link-admin span, .sidebar-footer button span {
+    display: none;
+  }
+  .admin-main-content {
+    margin-left: 70px;
+    width: calc(100% - 70px);
+  }
+  .nav-link-admin {
+    justify-content: center;
+    padding: 15px;
+  }
+}
