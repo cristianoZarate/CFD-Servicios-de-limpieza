@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { getReservas, cancelarReservaApi } from "../Servicios/Api"; // ◄--- ACTUALIZADO: Importación con el nombre definitivo del servicio
 import { AdminCalendario } from "./AdminCalendario"; 
+import { AdminClientes } from "./AdminClientes"; // ◄--- NUEVO: Componente del directorio de clientes
 import logo  from "../../assets/logo.png"; 
 import "./AdminDashboard.css";
 
@@ -65,7 +66,7 @@ export function AdminDashboard() {
 
     try {
       // Invocación al servicio Axios con el nuevo nombre de función
-      await cancelarReservaApi(reservaId);
+      await eliminarReservaApi(reservaId);
       
       alert("Agendamiento cancelado con éxito. Cupo liberado en MySQL.");
       
@@ -113,7 +114,11 @@ export function AdminDashboard() {
           >
             <i className="bi bi-calendar-event"></i> Calendario
           </button>
-          <button className="nav-link-admin">
+          {/* ◄--- ACTUALIZADO: Botón Clientes conmutando dinámicamente la sección --- */}
+          <button 
+            className={`nav-link-admin ${seccionActiva === "clientes" ? "active" : ""}`}
+            onClick={() => setSeccionActiva("clientes")}
+          >
             <i className="bi bi-people"></i> Clientes
           </button>
         </nav>
@@ -132,7 +137,11 @@ export function AdminDashboard() {
         <header className="admin-topbar shadow-sm">
           <div className="d-flex justify-content-between align-items-center px-4 h-100">
             <h5 className="m-0 fw-bold">
-              {seccionActiva === "dashboard" ? "Gestión de Agendamientos" : "Calendario de Operaciones"}
+              {seccionActiva === "dashboard" 
+                ? "Gestión de Agendamientos" 
+                : seccionActiva === "calendario" 
+                ? "Calendario de Operaciones" 
+                : "Directorio Corporativo"}
             </h5>
             <div className="admin-user-info">
               <span className="badge bg-primary">Panel Administrador</span>
@@ -141,6 +150,7 @@ export function AdminDashboard() {
         </header>
 
         <div className="container-fluid p-4">
+          {/* Enrutador de Secciones Dinámicas del Panel */}
           {seccionActiva === "dashboard" ? (
             <>
               {/* Fila de Tarjetas (KPIs) */}
@@ -232,7 +242,6 @@ export function AdminDashboard() {
                                   <button className="btn btn-icon-edit me-2" title="Editar fila">
                                     <i className="bi bi-pencil"></i>
                                   </button>
-                                  {/* ◄--- ACTUALIZADO: El botón del basurero naranja ahora invoca a handleEliminarCita --- */}
                                   <button 
                                     className="btn btn-icon-delete" 
                                     title="Eliminar agendamiento"
@@ -269,8 +278,10 @@ export function AdminDashboard() {
                 </div>
               </div>
             </>
-          ) : (
+          ) : seccionActiva === "calendario" ? (
             <AdminCalendario />
+          ) : (
+            <AdminClientes /> /* ◄--- NUEVO: Renderizado de la pantalla de clientes de forma modular --- */
           )}
         </div>
       </main>
