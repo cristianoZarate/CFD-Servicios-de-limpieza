@@ -1,6 +1,5 @@
 /* src/Paginas/Registro/Registro.css */
 
-/* Reutilizamos variables para mantener consistencia */
 :root {
   --cfd-blue: #003d7e;
   --cfd-blue-hover: #002a56;
@@ -10,20 +9,20 @@
 }
 
 .login-page-container {
-  min-height: 80vh;
+  min-height: 90vh; /* Aumentado ligeramente para dar espacio vertical a los nuevos inputs */
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 40px 20px;
-  background-color: #fff; /* O el color de fondo de tu Home */
+  background-color: #fff; 
 }
 
 .login-card {
   width: 100%;
-  max-width: 450px;
+  max-width: 480px; /* Expandido levemente para que los placeholders se lean completos */
   background: #ffffff;
   padding: 2.5rem;
-  border-radius: 20px; /* Bordes redondeados como en tu imagen */
+  border-radius: 20px; 
   border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
@@ -47,7 +46,7 @@
 }
 
 .form-control {
-  border-radius: 12px; /* Forma suave como en la captura */
+  border-radius: 12px; 
   padding: 12px 15px;
   border: 1.5px solid var(--cfd-border);
   transition: all 0.3s ease;
@@ -115,10 +114,9 @@
   margin-bottom: 1.5rem;
 }
 
-/* Ajuste responsive */
 @media (max-width: 480px) {
   .login-card {
     padding: 1.5rem;
-    box-shadow: none; /* En móvil se ve mejor más plano */
+    box-shadow: none; 
   }
 }

@@ -35,32 +35,46 @@ export function Login() {
       setError("");
       
       const response = await loginUsuario(correo, clave);
-      const { token, usuario } = response.data;
-
-      // Guardamos la sesión
-      localStorage.setItem("token", token);
-      localStorage.setItem("usuarioLogueado", JSON.stringify(usuario));
       
-      // Sincronizamos el estado de la app (Navbar, etc)
+      // El backend de Spring Boot retorna un Map únicamente con el campo "token"
+      const { token } = response.data;
+
+      // Guardamos la "pulsera VIP" en el almacenamiento del navegador
+      localStorage.setItem("token", token);
+      
+      // Fabricamos un objeto de sesión temporal con el correo ingresado.
+      // Esto nos permite mantener viva tu lógica de roles en el Navbar y la UI.
+      const correoNormalizado = correo.toLowerCase();
+      const esAdmin = correoNormalizado.endsWith("@cfdservicios.cl");
+      
+      const usuarioLogueado = {
+        correo: correoNormalizado,
+        role: esAdmin ? "admin" : "cliente",
+        id: 1 // ID temporal para las pruebas del módulo de agendamiento
+      };
+      
+      localStorage.setItem("usuarioLogueado", JSON.stringify(usuarioLogueado));
+      
+      // Sincronizamos el estado de la app de forma global
       window.dispatchEvent(new Event('usuarioLogueado'));
       
-      // --- LÓGICA INVISIBLE DE REDIRECCIÓN ---
-      // Verificamos por dominio o por rol asignado en la DB
-      const correoNormalizado = correo.toLowerCase();
-      const esAdmin = usuario.role?.toLowerCase() === "admin" || 
-                      correoNormalizado.endsWith("@cfdservicios.cl");
-
+      // --- LÓGICA DE REDIRECCIÓN ---
       if (esAdmin) {
-        // Acceso administrativo: Gestión de citas y dashboard
+        // Acceso administrativo: Dashboard de gestión
         navigate("/admin"); 
       } else {
-        // Acceso cliente: Vuelve al inicio o a su perfil
+        // Acceso cliente: Vista principal de reservas
         navigate("/"); 
       }
       
-    } catch (error) {
-      console.error("Error en login:", error);
-      setError("Correo o contraseña incorrectos.");
+    } catch (err) {
+      console.error("Error en login:", err);
+      // Capturamos el error 401 que lanza el backend cuando la clave o correo no coinciden
+      if (err.response && err.response.status === 401) {
+        setError("El correo o la contraseña son incorrectos.");
+      } else {
+        setError("No hay conexión con el servidor. Inténtalo más tarde.");
+      }
       setClave("");
     } finally {
       setLoading(false);

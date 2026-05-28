@@ -1,16 +1,52 @@
 // src/Paginas/Admin/AdminDashboard.jsx
-import { useState } from "react";
+import React, { useState, useEffect } from "react"; // ◄--- ACTUALIZADO: Importación de React para usar Fragment
 import { useNavigate } from "react-router-dom";
-import logo from "../../assets/logo.png"; // Importamos el logo oficial
+import { getReservas } from "../Servicios/Api"; 
+import { AdminCalendario } from "./AdminCalendario"; 
+import logo  from "../../assets/logo.png"; 
 import "./AdminDashboard.css";
 
 export function AdminDashboard() {
   const navigate = useNavigate();
-  const [citas, setCitas] = useState([
-    { id: 1, cliente: "Juan Pérez", servicio: "Aseo Industrial", fecha: "2026-05-15", hora: "09:00", estado: "Pendiente" },
-    { id: 2, cliente: "María Soto", servicio: "Limpieza de Vidrios", fecha: "2026-05-15", hora: "11:00", estado: "Confirmado" },
-    { id: 3, cliente: "Empresa XYZ", servicio: "Mantenimiento General", fecha: "2026-05-16", hora: "14:00", estado: "Finalizado" },
-  ]);
+  const [citas, setCitas] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [seccionActiva, setSeccionActiva] = useState("dashboard"); 
+
+  // Estado para controlar qué fila de la tabla se encuentra expandida para ver los detalles de contacto
+  const [filaExpandida, setFilaExpandida] = useState(null);
+
+  useEffect(() => {
+    const cargarDatosReales = async () => {
+      try {
+        setLoading(true);
+        const respuesta = await getReservas();
+        
+        if (respuesta.data && respuesta.data.length > 0) {
+          const citasFormateadas = respuesta.data.map((res) => ({
+            id: res.id,
+            cliente: res.usuario?.nombre || `Cliente #${res.usuarioId || 'Asignado'}`,
+            servicio: res.disponibilidad?.servicio?.nombre || "Servicio Contratado",
+            fecha: res.disponibilidad?.fecha || "Ver en BD",
+            hora: res.disponibilidad?.horaInicio ? res.disponibilidad.horaInicio.substring(0, 5) : "00:00",
+            estado: res.estado || "Confirmado",
+            telefono: res.usuario?.telefono || "No registrado",
+            direccion: res.usuario?.direccion || "Dirección no provista"
+          }));
+          setCitas(citasFormateadas);
+        } else {
+          // Si no hay datos en MySQL, la lista queda en blanco de forma fidedigna
+          setCitas([]);
+        }
+      } catch (error) {
+        console.error("Error al conectar con /reservas, manteniendo panel limpio:", error);
+        setCitas([]); // Si la API falla, no inventamos datos; se muestra vacío
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    cargarDatosReales();
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("usuarioLogueado");
@@ -19,19 +55,28 @@ export function AdminDashboard() {
     navigate("/login");
   };
 
+  const toggleFila = (id) => {
+    setFilaExpandida(filaExpandida === id ? null : id);
+  };
+
   return (
     <div className="admin-wrapper">
       {/* Sidebar Lateral */}
       <aside className="admin-sidebar">
         <div className="sidebar-header">
-          {/* Logo en lugar de texto */}
           <img src={logo} alt="Logo CFD" height="60" className="img-fluid" />
         </div>
         <nav className="sidebar-nav">
-          <button className="nav-link-admin active">
+          <button 
+            className={`nav-link-admin ${seccionActiva === "dashboard" ? "active" : ""}`}
+            onClick={() => setSeccionActiva("dashboard")}
+          >
             <i className="bi bi-speedometer2"></i> Dashboard
           </button>
-          <button className="nav-link-admin">
+          <button 
+            className={`nav-link-admin ${seccionActiva === "calendario" ? "active" : ""}`}
+            onClick={() => setSeccionActiva("calendario")}
+          >
             <i className="bi bi-calendar-event"></i> Calendario
           </button>
           <button className="nav-link-admin">
@@ -52,7 +97,9 @@ export function AdminDashboard() {
       <main className="admin-main-content">
         <header className="admin-topbar shadow-sm">
           <div className="d-flex justify-content-between align-items-center px-4 h-100">
-            <h5 className="m-0 fw-bold">Gestión de Agendamientos</h5>
+            <h5 className="m-0 fw-bold">
+              {seccionActiva === "dashboard" ? "Gestión de Agendamientos" : "Calendario de Operaciones"}
+            </h5>
             <div className="admin-user-info">
               <span className="badge bg-primary">Panel Administrador</span>
             </div>
@@ -60,86 +107,133 @@ export function AdminDashboard() {
         </header>
 
         <div className="container-fluid p-4">
-          {/* Fila de Tarjetas (KPIs) */}
-          <div className="row mb-4">
-            <div className="col-md-4">
-              <div className="card-kpi kpi-blue">
-                <div className="kpi-icon"><i className="bi bi-calendar-check"></i></div>
-                <div className="kpi-data">
-                  <h6>Citas Hoy</h6>
-                  <span className="fs-2 fw-bold">8</span>
+          {seccionActiva === "dashboard" ? (
+            <>
+              {/* Fila de Tarjetas (KPIs) */}
+              <div className="row mb-4">
+                <div className="col-md-4">
+                  <div className="card-kpi kpi-blue">
+                    <div className="kpi-icon"><i className="bi bi-calendar-check"></i></div>
+                    <div className="kpi-data">
+                      <h6>Total Citas</h6>
+                      <span className="fs-2 fw-bold">{citas.length}</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-md-4">
+                  <div className="card-kpi kpi-orange">
+                    <div className="kpi-icon"><i className="bi bi-clock-history"></i></div>
+                    <div className="kpi-data">
+                      <h6>Pendientes</h6>
+                      <span className="fs-2 fw-bold">
+                        {citas.filter(c => c.estado?.toLowerCase() === 'pendiente').length}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-md-4">
+                  <div className="card-kpi kpi-green">
+                    <div className="kpi-icon"><i className="bi bi-check-circle"></i></div>
+                    <div className="kpi-data">
+                      <h6>Confirmadas / Fin</h6>
+                      <span className="fs-2 fw-bold">
+                        {citas.filter(c => c.estado?.toLowerCase() !== 'pendiente').length}
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="col-md-4">
-              <div className="card-kpi kpi-orange">
-                <div className="kpi-icon"><i className="bi bi-clock-history"></i></div>
-                <div className="kpi-data">
-                  <h6>Pendientes</h6>
-                  <span className="fs-2 fw-bold">3</span>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-4">
-              <div className="card-kpi kpi-green">
-                <div className="kpi-icon"><i className="bi bi-check-circle"></i></div>
-                <div className="kpi-data">
-                  <h6>Finalizadas</h6>
-                  <span className="fs-2 fw-bold">12</span>
-                </div>
-              </div>
-            </div>
-          </div>
 
-          {/* Tabla de Citas */}
-          <div className="card shadow-sm border-0">
-            <div className="card-header bg-white py-3 d-flex justify-content-between align-items-center">
-              <h5 className="m-0 fw-bold text-cfd-blue">Próximos Agendamientos</h5>
-              {/* Botón de Editar para la sección completa */}
-              <button className="btn btn-sm btn-primary">
-                <i className="bi bi-pencil-square me-1"></i> Editar Lista
-              </button>
-            </div>
-            <div className="card-body">
-              <div className="table-responsive">
-                <table className="table table-hover align-middle">
-                  <thead className="table-light">
-                    <tr>
-                      <th>Cliente</th>
-                      <th>Servicio</th>
-                      <th>Fecha</th>
-                      <th>Hora</th>
-                      <th>Estado</th>
-                      <th className="text-center">Acciones</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {citas.map((cita) => (
-                      <tr key={cita.id}>
-                        <td className="fw-bold">{cita.cliente}</td>
-                        <td><span className="badge bg-info text-dark">{cita.servicio}</span></td>
-                        <td>{cita.fecha}</td>
-                        <td>{cita.hora}</td>
-                        <td>
-                          <span className={`status-pill ${cita.estado.toLowerCase()}`}>
-                            {cita.estado}
-                          </span>
-                        </td>
-                        <td className="text-center">
-                          <button className="btn btn-icon-edit me-2" title="Editar fila">
-                            <i className="bi bi-pencil"></i>
-                          </button>
-                          <button className="btn btn-icon-delete" title="Eliminar fila">
-                            <i className="bi bi-trash"></i>
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+              {/* Tabla de Citas */}
+              <div className="card shadow-sm border-0">
+                <div className="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                  <h5 className="m-0 fw-bold text-cfd-blue">Próximos Agendamientos</h5>
+                  <span className="text-muted small">Haz clic en una fila para ver los detalles de contacto</span>
+                </div>
+                <div className="card-body">
+                  {loading ? (
+                    <div className="text-center py-4">
+                      <div className="spinner-border text-primary" role="status"></div>
+                      <p className="mt-2 text-muted small">Consultando base de datos MySQL...</p>
+                    </div>
+                  ) : citas.length === 0 ? (
+                    <div className="text-center py-5 text-muted">
+                      <i className="bi bi-folder-x fs-2 d-block mb-2"></i>
+                      <span>No se registran agendamientos en el sistema.</span>
+                    </div>
+                  ) : (
+                    <div className="table-responsive">
+                      <table className="table table-hover align-middle">
+                        <thead className="table-light">
+                          <tr>
+                            <th>Cliente</th>
+                            <th>Servicio</th>
+                            <th>Fecha</th>
+                            <th>Hora</th>
+                            <th>Estado</th>
+                            <th className="text-center">Acciones</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {citas.map((cita) => (
+                            /* --- CORREGIDO: Reemplazamos el tr anidado inválido por un React.Fragment limpio --- */
+                            <React.Fragment key={cita.id || Math.random()}>
+                              <tr 
+                                onClick={() => toggleFila(cita.id)} 
+                                style={{ cursor: "pointer" }}
+                                className={filaExpandida === cita.id ? "table-active" : ""}
+                              >
+                                <td className="fw-bold">
+                                  <i className={`bi bi-chevron-${filaExpandida === cita.id ? 'down' : 'right'} me-2 text-primary small`}></i>
+                                  {cita.cliente}
+                                </td>
+                                <td><span className="badge bg-info text-dark">{cita.servicio}</span></td>
+                                <td>{cita.fecha}</td>
+                                <td>{cita.hora}</td>
+                                <td>
+                                  <span className={`status-pill ${cita.estado?.toLowerCase()}`}>
+                                    {cita.estado}
+                                  </span>
+                                </td>
+                                <td className="text-center" onClick={(e) => e.stopPropagation()}>
+                                  <button className="btn btn-icon-edit me-2" title="Editar fila">
+                                    <i className="bi bi-pencil"></i>
+                                  </button>
+                                  <button className="btn btn-icon-delete" title="Eliminar fila">
+                                    <i className="bi bi-trash"></i>
+                                  </button>
+                                </td>
+                              </tr>
+
+                              {/* Sección colapsable que despliega los datos reales cargados de la base de datos */}
+                              {filaExpandida === cita.id && (
+                                <tr className="table-light animate__animated animate__fadeIn">
+                                  <td colSpan="6" className="p-3 bg-light border-start border-primary border-4">
+                                    <div className="row g-3 px-3">
+                                      <div className="col-md-6">
+                                        <span className="text-muted d-block small fw-bold">NÚMERO TELEFÓNICO</span>
+                                        <span className="text-dark fw-bold"><i className="bi bi-telephone me-2 text-secondary"></i>{cita.telefono}</span>
+                                      </div>
+                                      <div className="col-md-6">
+                                        <span className="text-muted d-block small fw-bold">DIRECCIÓN DE TRABAJO</span>
+                                        <span className="text-dark fw-bold"><i className="bi bi-geo-alt me-2 text-secondary"></i>{cita.direccion}</span>
+                                      </div>
+                                    </div>
+                                  </td>
+                                </tr>
+                              )}
+                            </React.Fragment>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
-          </div>
+            </>
+          ) : (
+            <AdminCalendario />
+          )}
         </div>
       </main>
     </div>
