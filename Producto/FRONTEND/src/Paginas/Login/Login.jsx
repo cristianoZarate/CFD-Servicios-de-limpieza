@@ -36,17 +36,17 @@ export function Login() {
       
       const response = await loginUsuario(correo, clave);
       
-      // Extraemos el token y los datos reales del usuario devueltos por Gabriel
+  
       const { token, usuario } = response.data;
 
-      // Guardamos la "pulsera VIP" en el almacenamiento del navegador
+  
       localStorage.setItem("token", token);
       
-      // Mantenemos la normalización por seguridad en la interfaz
+      // Normalización por seguridad en la interfaz
       const correoNormalizado = correo.toLowerCase();
       const esAdmin = correoNormalizado.endsWith("@cfdservicios.cl");
       
-      // ◄--- CORREGIDO: Sincronización estricta de nombres de atributos Front/Back ---
+
       const usuarioLogueado = {
         id: usuario?.id || response.data.usuarioId, 
         nombre: usuario?.nombre || "Usuario CFD",
@@ -58,10 +58,10 @@ export function Login() {
       
       localStorage.setItem("usuarioLogueado", JSON.stringify(usuarioLogueado));
       
-      // Sincronizamos el estado de la app de forma global
+      // Sincronizar estado de la app 
       window.dispatchEvent(new Event('usuarioLogueado'));
       
-      // --- LÓGICA DE REDIRECCIÓN EN BASE AL ROL REAL ---
+
       if (usuarioLogueado.rol === "admin" || esAdmin) {
         navigate("/admin"); 
       } else {
