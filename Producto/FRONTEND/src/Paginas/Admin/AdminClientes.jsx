@@ -14,7 +14,7 @@ export function AdminClientes() {
         const respuesta = await getUsuarios();
         
         if (respuesta.data && respuesta.data.length > 0) {
-          // Omitimos de forma estricta: apellido, estado y password_hash en el mapeo
+
           const clientesFormateados = respuesta.data.map((u) => ({
             id: u.id,
             nombre: u.nombre || "Usuario CFD",
@@ -24,8 +24,7 @@ export function AdminClientes() {
             direccion: u.direccion || "Dirección no provista"
           }));
 
-          // Filtrar por seguridad para mostrar solo los que tienen rol 'cliente' 
-          // (o quitar el .filter si deseas ver administradores también)
+
           setClientes(clientesFormateados.filter(c => c.rol.toLowerCase() === "cliente"));
         } else {
           setClientes([]);
