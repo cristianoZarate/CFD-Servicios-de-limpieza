@@ -87,7 +87,7 @@ export function Agenda() {
           localStorage.setItem("usuarioLogueado", JSON.stringify(resLogin.data.usuario));
           window.dispatchEvent(new Event('usuarioLogueado'));
           
-          // Captura el ID desde la sub-llave que retorna el AuthController de Gabriel
+          
           usuarioIdFinal = resLogin.data.usuario?.id || resLogin.data.usuario?.usuarioId;
           setOpcionIngreso("logged");
         } catch (errLog) {
@@ -99,7 +99,7 @@ export function Agenda() {
         // Flujo directo si ya inició sesión previamente (Extrae la ID dinámica de la sesión real)
         const sesion = JSON.parse(localStorage.getItem("usuarioLogueado"));
         
-        // ◄--- CORREGIDO: Extrae de forma segura el ID mapeando múltiples nomenclaturas ---
+        
         usuarioIdFinal = sesion?.id || sesion?.usuarioId;
         
         if (!usuarioIdFinal) {
