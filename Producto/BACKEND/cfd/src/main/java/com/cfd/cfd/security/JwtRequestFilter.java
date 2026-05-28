@@ -33,7 +33,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         // Convertimos la URI a minúsculas para evitar problemas de descalce
         final String requestURI = request.getRequestURI().toLowerCase();
 
-        // ◄--- REESTRUCTURADO: Paso libre exclusivo para controladores públicos ---
+  
         // Se elimina "usuarios" de esta lista para obligar la validación de tokens en la gestión de clientes
         if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ") || 
             requestURI.contains("auth") || 
@@ -41,9 +41,9 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             requestURI.contains("reservas") || 
             requestURI.contains("disponibilidad")) {
             
-            // Delegamos la autorización final a las excepciones de SecurityConfig (.permitAll())
+  
             chain.doFilter(request, response); 
-            return; // Corta la ejecución del filtro de JWT de inmediato para evitar el error 403
+            return; 
         }
 
         String username = null;
