@@ -1,22 +1,18 @@
-// src/Paginas/Admin/AdminDashboard.jsx
 import React, { useState, useEffect } from "react"; 
 import { useNavigate } from "react-router-dom";
-import { getReservas, cancelarReservaApi } from "../Servicios/Api"; // ◄--- CORREGIDO: Nombre de importación unificado
+import { getReservas, cancelarReservaApi } from "../Servicios/Api";
 import { AdminCalendario } from "./AdminCalendario"; 
 import { AdminClientes } from "./AdminClientes"; 
 import logo from "../../assets/logo.png"; 
 import "./AdminDashboard.css";
-
+ 
 export function AdminDashboard() {
   const navigate = useNavigate();
   const [citas, setCitas] = useState([]);
   const [loading, setLoading] = useState(true);
   const [seccionActiva, setSeccionActiva] = useState("dashboard"); 
-
-  // Estado para controlar qué fila de la tabla se encuentra expandida para ver los detalles de contacto
   const [filaExpandida, setFilaExpandida] = useState(null);
-
-  // Mantenemos la función de consulta aislada para recargar la grilla si es necesario
+ 
   const cargarDatosReales = async () => {
     try {
       setLoading(true);
@@ -24,11 +20,10 @@ export function AdminDashboard() {
       
       if (respuesta.data && respuesta.data.length > 0) {
         const citasFormateadas = respuesta.data.map((res) => {
-          // Concatenamos de forma segura Nombre y Apellido desde el objeto Usuario relacional
           const nombreCompleto = res.usuario 
             ? `${res.usuario.nombre || ''} ${res.usuario.apellido || ''}`.trim() 
             : `Cliente #${res.usuarioId || 'Asignado'}`;
-
+ 
           return {
             id: res.id,
             cliente: nombreCompleto || "Usuario CFD",
@@ -45,27 +40,26 @@ export function AdminDashboard() {
         setCitas([]);
       }
     } catch (error) {
-      console.error("Error al conectar con /reservas, manteniendo panel limpio:", error);
+      console.error("Error al conectar con /reservas:", error);
       setCitas([]); 
     } finally {
       setLoading(false);
     }
   };
-
+ 
   useEffect(() => {
     cargarDatosReales();
   }, []);
-
-  // ◄--- ACTUALIZADO: Semántica enfocada en cancelación de cita ---
+ 
   const handleCancelarCita = async (reservaId) => {
     const confirmar = window.confirm(
       "¿Está seguro de que desea cancelar este agendamiento? Esta acción liberará un cupo automáticamente en la base de datos."
     );
-
+ 
     if (!confirmar) return;
-
+ 
     try {
-      await eliminarReservaApi(reservaId);
+      await cancelarReservaApi(reservaId);
       
       alert("Agendamiento cancelado con éxito. Cupo liberado en MySQL.");
       
@@ -79,21 +73,20 @@ export function AdminDashboard() {
       alert("No se pudo procesar la cancelación. Verifica que el backend esté corriendo.");
     }
   };
-
+ 
   const handleLogout = () => {
     localStorage.removeItem("usuarioLogueado");
     localStorage.removeItem("token");
     window.dispatchEvent(new Event('usuarioLogueado'));
     navigate("/login");
   };
-
+ 
   const toggleFila = (id) => {
     setFilaExpandida(filaExpandida === id ? null : id);
   };
-
+ 
   return (
     <div className="admin-wrapper">
-      {/* Sidebar Lateral */}
       <aside className="admin-sidebar">
         <div className="sidebar-header">
           <img src={logo} alt="Logo CFD" height="60" className="img-fluid" />
@@ -127,8 +120,7 @@ export function AdminDashboard() {
           </button>
         </div>
       </aside>
-
-      {/* Contenido Principal */}
+ 
       <main className="admin-main-content">
         <header className="admin-topbar shadow-sm">
           <div className="d-flex justify-content-between align-items-center px-4 h-100">
@@ -144,12 +136,10 @@ export function AdminDashboard() {
             </div>
           </div>
         </header>
-
+ 
         <div className="container-fluid p-4">
-          {/* Enrutador de Secciones Dinámicas del Panel */}
           {seccionActiva === "dashboard" ? (
             <>
-              {/* Fila de Tarjetas (KPIs) */}
               <div className="row mb-4">
                 <div className="col-md-4">
                   <div className="card-kpi kpi-blue">
@@ -183,8 +173,7 @@ export function AdminDashboard() {
                   </div>
                 </div>
               </div>
-
-              {/* Tabla de Citas */}
+ 
               <div className="card shadow-sm border-0">
                 <div className="card-header bg-white py-3 d-flex justify-content-between align-items-center">
                   <h5 className="m-0 fw-bold text-cfd-blue">Próximos Agendamientos</h5>
@@ -241,7 +230,7 @@ export function AdminDashboard() {
                                       <i className="bi bi-pencil"></i>
                                     </button>
                                     <button 
-                                      className="btn btn-icon-cancel" 
+                                      className="btn btn-icon-delete" 
                                       title="Cancelar agendamiento (Liberar cupo)"
                                       onClick={() => handleCancelarCita(cita.id)}
                                     >
@@ -249,10 +238,9 @@ export function AdminDashboard() {
                                     </button>
                                   </td>
                                 </tr>
-
-                                {/* Fila colapsable perfectamente contenida dentro de la estructura de la tabla */}
+ 
                                 {isExpandida && (
-                                  <tr className="table-light animate__animated animate__fadeIn">
+                                  <tr className="table-light">
                                     <td colSpan="6" className="p-3 bg-light border-start border-primary border-4">
                                       <div className="row g-3 px-3">
                                         <div className="col-md-6">
