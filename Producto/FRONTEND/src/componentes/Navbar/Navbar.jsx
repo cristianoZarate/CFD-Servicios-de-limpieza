@@ -43,7 +43,7 @@ export function Navbar() {
     navigate("/");
   };
 
-  // LÓGICA DE ADMIN: Se activa por correo corporativo o por rol en la base de datos
+ 
   const esAdmin = usuario && (
     usuario.correo?.toLowerCase().endsWith("@cfdservicios.cl") || 
     ["administrador", "admin"].includes(usuario.rol?.toLowerCase()) ||
@@ -113,7 +113,7 @@ export function Navbar() {
                     <button className="dropdown-item text-danger fw-bold" onClick={handleLogout}>
                       Cerrar Sesión
                     </button>
-                  </li> {/* ◄--- FIXED: Etiqueta li cerrada correctamente */}
+                  </li> {}
                 </ul>
               </li>
             ) : (

@@ -14,7 +14,7 @@ export function AdminCalendario() {
   // Estado para expandir los datos de despacho de una tarjeta específica
   const [tarjetaExpandida, setTarjetaExpandida] = useState(null);
 
-  // 1. Cargar únicamente las reservas reales desde MySQL al montar el componente
+  //  Cargar únicamente las reservas reales desde MySQL al montar el componente
   useEffect(() => {
     const obtenerReservasAdmin = async () => {
       try {
@@ -48,7 +48,7 @@ export function AdminCalendario() {
     obtenerReservasAdmin();
   }, []);
 
-  // 2. Filtrar las citas cada vez que el administrador pinche un día distinto
+  
   useEffect(() => {
     const ano = fechaSeleccionada.getFullYear();
     const mes = String(fechaSeleccionada.getMonth() + 1).padStart(2, '0');
@@ -57,7 +57,7 @@ export function AdminCalendario() {
 
     const filtradas = todasLasCitas.filter(cita => cita.fecha === stringFechaSeleccionada);
     setCitasDelDia(filtradas);
-    setTarjetaExpandida(null); // Resetea la expansión al cambiar de día
+    setTarjetaExpandida(null); // Resetear expansión al cambiar de día
   }, [fechaSeleccionada, todasLasCitas]);
 
   return (

@@ -8,8 +8,8 @@ export function Registro() {
   const navigate = useNavigate();
   const [nombre, setNombre] = useState("");
   const [correo, setCorreo] = useState("");
-  const [telefono, setTelefono] = useState(""); // ◄--- NUEVO ESTADO
-  const [direccion, setDireccion] = useState(""); // ◄--- NUEVO ESTADO
+  const [telefono, setTelefono] = useState(""); 
+  const [direccion, setDireccion] = useState(""); 
   const [clave, setClave] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -23,7 +23,6 @@ export function Registro() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Agregamos la verificación de los nuevos campos obligatorios
     if (!nombre.trim() || !correo.trim() || !telefono.trim() || !direccion.trim() || !clave.trim()) {
       setError("Todos los campos son obligatorios.");
       return;
@@ -42,8 +41,8 @@ export function Registro() {
       await registrarUsuario({ 
         nombre: nombre.trim(),
         correo: correo.trim().toLowerCase(), 
-        telefono: telefono.trim(), // Mapeado al DTO del backend
-        direccion: direccion.trim(), // Mapeado al DTO del backend
+        telefono: telefono.trim(), 
+        direccion: direccion.trim(), 
         passwordHash: clave 
       });
 
@@ -73,7 +72,7 @@ export function Registro() {
         {error && <div className="alert alert-danger py-2 text-center" style={{ fontSize: '0.85rem' }}>{error}</div>}
 
         <form onSubmit={handleSubmit} className="login-form-content">
-          {/* Nombre Completo en lugar de Nombre de Usuario */}
+          {/* Nombre Completo */}
           <div className="mb-3">
             <label className="form-label">Nombre Completo</label>
             <input
@@ -98,7 +97,7 @@ export function Registro() {
             />
           </div>
 
-          {/* Nuevo campo: Número de Teléfono */}
+          {/*  Número de Teléfono */}
           <div className="mb-3">
             <label className="form-label">Número de Teléfono</label>
             <input
@@ -111,7 +110,7 @@ export function Registro() {
             />
           </div>
 
-          {/* Nuevo campo: Dirección del Servicio */}
+          {/* Dirección del Servicio */}
           <div className="mb-3">
             <label className="form-label">Dirección del Servicio</label>
             <input
