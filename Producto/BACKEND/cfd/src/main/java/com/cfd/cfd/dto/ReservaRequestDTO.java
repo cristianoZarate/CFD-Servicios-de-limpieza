@@ -4,14 +4,13 @@ import lombok.Data;
 
 @Data
 public class ReservaRequestDTO {
-    // El ID del cliente que está comprando/agendando
-    private Integer usuarioId; 
-    
-    // El ID del bloque horario que seleccionó en React
-    private Integer disponibilidadId; 
 
+    /** ID del cliente que está agendando (referencia a usuarios.id) */
+    private Integer usuarioId;
+
+    /** ID del bloque horario seleccionado (referencia a disponibilidad.id) */
+    private Integer disponibilidadId;
+
+    /** ID de la categoría de servicio (referencia a categorias_servicio.id) */
     private Long servicioId;
-
-    public Long getServicioId() { return servicioId; }
-    public void setServicioId(Long servicioId) { this.servicioId = servicioId; }
 }
