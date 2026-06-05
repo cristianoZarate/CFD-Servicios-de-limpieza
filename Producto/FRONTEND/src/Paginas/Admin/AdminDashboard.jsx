@@ -50,12 +50,7 @@ export function AdminDashboard() {
   useEffect(() => {
     cargarDatosReales();
   }, []);
-<<<<<<< HEAD
- 
-=======
 
-  
->>>>>>> 55279751426a0cc4d1a25ac49c20d5bc620682ee
   const handleCancelarCita = async (reservaId) => {
     const confirmar = window.confirm(
       "¿Está seguro de que desea cancelar este agendamiento? Esta acción liberará un cupo automáticamente en la base de datos."

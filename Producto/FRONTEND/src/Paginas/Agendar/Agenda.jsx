@@ -1,11 +1,9 @@
-// src/Paginas/Agenda/Agenda.jsx
 import { useState, useEffect } from 'react';
 import Calendar from 'react-calendar';
-import axios from 'axios'; // Importación estándar para compilación limpia en Vite
-import { crearReserva, loginUsuario } from '../Servicios/Api'; 
+import { crearReserva, loginUsuario, API } from '../Servicios/Api'; 
 import 'react-calendar/dist/Calendar.css';
 import './Agenda.css';
-
+ 
 export function Agenda() {
   const [fecha, setFecha] = useState(new Date());
   const [horaSeleccionada, setHoraSeleccionada] = useState(null);
@@ -14,24 +12,22 @@ export function Agenda() {
   const [reservaId, setReservaId] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-
+ 
   const [paso, setPaso] = useState(1); 
   const [opcionIngreso, setOpcionIngreso] = useState(""); 
-
+ 
   const [correoLogin, setCorreoLogin] = useState("");
   const [claveLogin, setClaveLogin] = useState("");
-
-  // ESTADOS DE CONTROL CRÍTICO:
+ 
   const [bloquesHorariosDinamicos, setBloquesHorariosDinamicos] = useState([]);
-  const [disponibilidadIdReal, setDisponibilidadIdReal] = useState(null); // Resguarda el ID de MySQL
-
+  const [disponibilidadIdReal, setDisponibilidadIdReal] = useState(null);
+ 
   const serviciosDisponibles = [
     { id: "1", nombre: "Aseo Residencial Regular", icono: "bi-house-heart" },
     { id: "2", nombre: "Limpieza de Vidrios en Altura", icono: "bi-building" },
     { id: "3", nombre: "Sanitización / Aseo Industrial", icono: "bi-shield-shaded" }
   ];
-
-  // EFFECT: Consulta dinámicamente las horas reales desde la base de datos
+ 
   useEffect(() => {
     const cargarHorariosReales = async () => {
       try {
@@ -39,22 +35,20 @@ export function Agenda() {
         const mes = String(fecha.getMonth() + 1).padStart(2, '0');
         const dia = String(fecha.getDate()).padStart(2, '0');
         const fechaFormateada = `${ano}-${mes}-${dia}`;
-
-        // Consumimos el endpoint consultor inteligente del backend
-        const url = `http://localhost:8080/api/v1/disponibilidad/consultar?fecha=${fechaFormateada}&servicioId=${servicioSeleccionado}`;
-        const respuesta = await axios.get(url);
+ 
+        const respuesta = await API.get(`/disponibilidad/consultar?fecha=${fechaFormateada}&servicioId=${servicioSeleccionado}`);
         
-        // Seteamos los bloques dinámicos reales de la base de datos
         setBloquesHorariosDinamicos(respuesta.data);
+        setError(""); // limpiar error previo al cargar exitosamente
       } catch (err) {
-        console.error("Error cargando disponibilidad automatizada:", err);
+        console.error("Error cargando disponibilidad:", err);
         setError("No se pudieron cargar los horarios del día. Revisa la conexión con el servidor.");
       }
     };
-
+ 
     cargarHorariosReales();
   }, [fecha, servicioSeleccionado]);
-
+ 
   const handleContinuarPaso2 = () => {
     if (!horaSeleccionada) {
       alert("Por favor, selecciona una hora antes de continuar.");
@@ -66,15 +60,15 @@ export function Agenda() {
     }
     setPaso(2);
   };
-
+ 
   const handleProcesarAgendamientoFinal = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError("");
-
+ 
     try {
       let usuarioIdFinal = null;
-
+ 
       if (opcionIngreso === "login") {
         if (!correoLogin.trim() || !claveLogin.trim()) {
           setError("Por favor ingresa tus credenciales.");
@@ -87,7 +81,6 @@ export function Agenda() {
           localStorage.setItem("usuarioLogueado", JSON.stringify(resLogin.data.usuario));
           window.dispatchEvent(new Event('usuarioLogueado'));
           
-          
           usuarioIdFinal = resLogin.data.usuario?.id || resLogin.data.usuario?.usuarioId;
           setOpcionIngreso("logged");
         } catch (errLog) {
@@ -96,10 +89,7 @@ export function Agenda() {
           return;
         }
       } else {
-        // Flujo directo si ya inició sesión previamente (Extrae la ID dinámica de la sesión real)
         const sesion = JSON.parse(localStorage.getItem("usuarioLogueado"));
-        
-        
         usuarioIdFinal = sesion?.id || sesion?.usuarioId;
         
         if (!usuarioIdFinal) {
@@ -109,18 +99,17 @@ export function Agenda() {
           return;
         }
       }
-
-      // ◄--- BLINDADO: Conversión explícita a entero base 10 para evitar un envío nulo o string erróneo ---
+ 
       const respuesta = await crearReserva({
         usuarioId: parseInt(usuarioIdFinal, 10),
         disponibilidadId: parseInt(disponibilidadIdReal, 10),
         servicioId: parseInt(servicioSeleccionado, 10)
       });
-
+ 
       const idReservaDB = respuesta.data.id || Math.floor(1000 + Math.random() * 9000);
       setReservaId(`CFD-${idReservaDB}`);
       setMostrarConfirmacion(true);
-
+ 
     } catch (err) {
       console.error("Error crítico procesando agendamiento:", err);
       setError(err.response?.data || "Ocurrió un error en el servidor al procesar tu agendamiento. Inténtalo de nuevo.");
@@ -128,7 +117,7 @@ export function Agenda() {
       setLoading(false);
     }
   };
-
+ 
   return (
     <div className="agenda-bg">
       <div className="container py-5">
@@ -161,7 +150,7 @@ export function Agenda() {
                 </div>
               </div>
             </div>
-
+ 
             <h5 className="text-muted mb-4 ps-2">2. Selecciona la fecha y hora</h5>
             <div className="row g-4">
               <div className="col-lg-6">
@@ -184,7 +173,7 @@ export function Agenda() {
                   />
                 </div>
               </div>
-
+ 
               <div className="col-lg-6">
                 <div className="agenda-card">
                   <div className="card-header-simple border-bottom mb-3">
@@ -219,7 +208,7 @@ export function Agenda() {
                 </div>
               </div>
             </div>
-
+ 
             <div className="d-flex justify-content-center mt-5">
               <button type="button" className="btn-confirmar-modern" onClick={handleContinuarPaso2}>
                 CONTINUAR <i className="bi bi-arrow-right ms-2"></i>
@@ -241,10 +230,9 @@ export function Agenda() {
                 <p className="text-muted small mb-4">
                   Día seleccionado: <span className="text-dark fw-bold">{fecha.toLocaleDateString('es-ES')}</span> a las <span className="text-dark fw-bold">{horaSeleccionada?.hora} Hrs</span>
                 </p>
-
+ 
                 {error && <div className="alert alert-danger py-2 text-center small mb-3">{error}</div>}
-
-                {/* Pasarela exclusiva para Loguearse o ir a Crear Cuenta */}
+ 
                 {opcionIngreso === "" && (
                   <div className="text-center py-3">
                     <h6 className="fw-bold text-secondary mb-4">Para confirmar tu agendamiento, debes iniciar sesión</h6>
@@ -258,7 +246,7 @@ export function Agenda() {
                     </div>
                   </div>
                 )}
-
+ 
                 {opcionIngreso === "login" && (
                   <form onSubmit={handleProcesarAgendamientoFinal}>
                     <h6 className="fw-bold mb-3 text-secondary"><i className="bi bi-shield-lock"></i> Ingresa a tu cuenta CFD</h6>
@@ -282,7 +270,7 @@ export function Agenda() {
                     </div>
                   </form>
                 )}
-
+ 
                 {opcionIngreso === "logged" && (
                   <div className="text-center py-3">
                     <div className="alert alert-success py-2 mb-4 small">
@@ -299,8 +287,7 @@ export function Agenda() {
           </div>
         )}
       </div>
-
-      {/* Modal de Confirmación */}
+ 
       {mostrarConfirmacion && (
         <div className="modal-overlay">
           <div className="modal-confirmacion animate__animated animate__zoomIn">
