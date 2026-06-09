@@ -24,34 +24,36 @@ public class DisponibilidadService {
 
     @Transactional
     public List<Disponibilidad> obtenerOGenerarDisponibilidades(LocalDate fecha, Integer servicioId) {
-        // 1. Buscar si ya existen bloques horarios para esa fecha y servicio en MySQL
-        List<Disponibilidad> existentes = disponibilidadRepository.findByFechaAndServicioId(fecha, servicioId);
-        
-        // 2. Si ya existen, los retornamos (mantiene cuántos cupos van ocupados)
+
+        // Devolver registros existentes si los hay
+        List<Disponibilidad> existentes =
+                disponibilidadRepository.findByFechaAndServicioId(fecha, servicioId);
+
         if (!existentes.isEmpty()) {
             return existentes;
         }
 
-        // 3. Si no existen registros para ese día, buscamos el servicio e inyectamos los 12 bloques en caliente
+        // Si no hay registros para esa fecha/servicio, generarlos con estructura uniforme
         Servicio servicio = servicioRepository.findById(servicioId)
-                .orElseThrow(() -> new RuntimeException("Servicio no encontrado"));
+                .orElseThrow(() -> new RuntimeException("Servicio no encontrado con id: " + servicioId));
 
-        int[] horasInicio = {9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20};
-        List<Disponibilidad> nuevasDisponibilidades = new ArrayList<>();
+        // Creacion de horarios automatico con una ora de diferencia
+        final int HORA_INICIO   = 9;
+        final int HORA_FIN      = 20; 
+        final int CUPOS_TOTALES = 1;    
+        List<Disponibilidad> nuevos = new ArrayList<>();
 
-        for (int hora : horasInicio) {
+        for (int hora = HORA_INICIO; hora < HORA_FIN; hora++) {
             Disponibilidad disp = new Disponibilidad();
             disp.setServicio(servicio);
             disp.setFecha(fecha);
             disp.setHoraInicio(LocalTime.of(hora, 0));
-            disp.setHoraFin(LocalTime.of(hora + 2, 0)); // Bloques de 2 horas de duración
-            disp.setCuposTotales(3); // 3 cupos máximos por hora
-            disp.setCuposOcupados(0); // Inicia completamente libre
-            
-            nuevasDisponibilidades.add(disp);
+            disp.setHoraFin(LocalTime.of(hora + 1, 0));   
+            disp.setCuposTotales(CUPOS_TOTALES);
+            disp.setCuposOcupados(0);
+            nuevos.add(disp);
         }
 
-        // 4. Guardamos los 12 bloques nuevos en la base de datos y los devolvemos al Frontend
-        return disponibilidadRepository.saveAll(nuevasDisponibilidades);
+        return disponibilidadRepository.saveAll(nuevos);
     }
 }
