@@ -9,7 +9,8 @@ import { Nosotros } from "./Paginas/Nosotros/Nosotros";
 import { Servicios } from "./Paginas/Servicios/Servicios";
 import { Agenda } from "./Paginas/Agendar/Agenda";
 import { Login } from "./Paginas/Login/Login";
-import { Registro } from "./Paginas/Registro/Registro"; // Nueva página de registro
+import { Registro } from "./Paginas/Registro/Registro";
+import { Perfil } from "./Paginas/Perfil/Perfil"; // Vista de perfil del cliente
 import { AdminDashboard } from "./Paginas/Admin/AdminDashboard";
 
 // Componente auxiliar para manejar la visibilidad de los elementos globales
@@ -43,8 +44,9 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/registro" element={<Registro />} /> {/* Ruta para crear cuentas */}
           <Route path="/agenda" element={<Agenda />} />
+          <Route path="/perfil" element={<Perfil />} /> {/* Datos personales + historial del cliente */}
 
-          {/* Ruta Administrativa (Limpia) */}
+          {/* Ruta Administrativa  */}
           <Route path="/admin" element={<AdminDashboard />} />
 
           {/* Redirección por defecto */}

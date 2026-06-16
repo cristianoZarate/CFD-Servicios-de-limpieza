@@ -45,6 +45,13 @@ export const registrarUsuarioManual = async (datosUsuario) =>
 // Lista de usuarios para el panel administrativo 
 export const getUsuarios = async () => API.get("/usuarios");
 
+// Obtiene los datos de un usuario específico (vista Mi Perfil)
+export const getUsuarioPorId = async (id) => API.get(`/usuarios/${id}`);
+
+// Actualiza nombre, apellido, teléfono y dirección del perfil del usuario
+export const actualizarPerfil = async (id, datosPerfil) =>
+  API.put(`/usuarios/${id}`, datosPerfil);
+
 // Crea una nueva reserva
 export const crearReserva = async (reservaDTO) =>
   API.post("/reservas", reservaDTO);
@@ -55,5 +62,9 @@ export const crearDisponibilidad = async (datosDisponibilidad) =>
 
 // Lista completa de reservas para el panel administrativo 
 export const getReservas = async () => API.get("/reservas");
+
+// Historial de agendamientos de un cliente específico
+export const getReservasPorUsuario = async (usuarioId) =>
+  API.get(`/reservas/usuario/${usuarioId}`);
 
 export default API;
