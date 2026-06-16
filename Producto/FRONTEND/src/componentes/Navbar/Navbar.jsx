@@ -13,6 +13,7 @@ export function Navbar() {
       try {
         const rawUser = localStorage.getItem("usuarioLogueado");
         
+        // Verificación estricta y segura antes de usar JSON.parse
         if (rawUser && rawUser !== "undefined" && rawUser !== "null") {
           setUsuario(JSON.parse(rawUser));
         } else {
@@ -61,7 +62,7 @@ export function Navbar() {
           />
         </Link>
 
-        {/* Botón Toggler para celular */}
+        {/* Botón Toggler para móviles */}
         <button className="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
           <span className="navbar-toggler-icon"></span>
         </button>
@@ -104,8 +105,7 @@ export function Navbar() {
                 </button>
                 <ul className="dropdown-menu dropdown-menu-end shadow border-0 mt-2">
                   <li><h6 className="dropdown-header">Hola, {usuario.nombre}</h6></li>
-                  {esAdmin && <li><Link className="dropdown-item fw-bold" to="/admin">Panel de Citas</Link></li>}
-                  {/* "Mi Perfil" (datos personales + historial) solo aplica a clientes. */}
+                  {/* "Mi Perfil" (datos personales + historial) solo aplica a clientes.*/}
                   {!esAdmin && <li><Link className="dropdown-item" to="/perfil">Mi Perfil</Link></li>}
                   <li><hr className="dropdown-divider" /></li>
                   <li>

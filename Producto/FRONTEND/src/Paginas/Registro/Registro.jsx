@@ -17,20 +17,58 @@ export function Registro() {
 
   const validarCorreo = (email) => {
     const emailLimpio = email.trim().toLowerCase();
-    const regex = /^[a-z0-9._%+-]+@(cfdservicios\.cl|gmail\.com)$/;
-    return regex.test(emailLimpio);
+
+    if (!emailLimpio) {
+      return "El correo es obligatorio.";
+    }
+
+    // Correo válido
+    const formaValida = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!formaValida.test(emailLimpio)) {
+      return "El correo ingresado no tiene un formato válido.";
+    }
+
+    // Restriccion correos -> Solo gmail o cfd
+    const dominioPermitido = /^[a-z0-9._%+-]+@(cfdservicios\.cl|gmail\.com)$/;
+    if (!dominioPermitido.test(emailLimpio)) {
+      return "Solo se permiten correos @gmail.com o corporativos @cfdservicios.cl.";
+    }
+
+    return null; 
+  };
+
+  const validarClave = (password) => {
+    const faltantes = [];
+
+    if (password.length < 10) faltantes.push("al menos 10 caracteres");
+    if (!/[A-Z]/.test(password)) faltantes.push("una letra mayúscula");
+    if (!/[0-9]/.test(password)) faltantes.push("un número");
+    if (!/[^A-Za-z0-9]/.test(password)) faltantes.push("un carácter especial (ej: ! @ # $ %)");
+
+    if (faltantes.length > 0) {
+      return `La contraseña debe tener ${faltantes.join(", ")}.`;
+    }
+
+    return null; // 
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    if (!nombre.trim() || !apellido.trim() || !correo.trim() || !telefono.trim() || !direccion.trim() || !clave.trim()) {
+
+    if (!nombre.trim() || !apellido.trim() || !telefono.trim() || !direccion.trim()) {
       setError("Todos los campos son obligatorios.");
       return;
     }
 
-    if (!validarCorreo(correo)) {
-      setError("Solo se permiten correos @gmail.com o corporativos.");
+    const errorCorreo = validarCorreo(correo);
+    if (errorCorreo) {
+      setError(errorCorreo);
+      return;
+    }
+
+    const errorClave = validarClave(clave);
+    if (errorClave) {
+      setError(errorClave);
       return;
     }
 
@@ -72,8 +110,9 @@ export function Registro() {
         </div>
 
         {error && <div className="alert alert-danger py-2 text-center" style={{ fontSize: '0.85rem' }}>{error}</div>}
-        {/* Nombre */}
+
         <form onSubmit={handleSubmit} className="login-form-content">
+          {/* Nombre y Apellido en la misma fila */}
           <div className="row g-2 mb-3">
             <div className="col-md-6">
               <label className="form-label">Nombre</label>
@@ -86,7 +125,6 @@ export function Registro() {
                 disabled={loading}
               />
             </div>
-            {/*  Apellido */}
             <div className="col-md-6">
               <label className="form-label">Apellido</label>
               <input
@@ -99,7 +137,7 @@ export function Registro() {
               />
             </div>
           </div>
-          {/*  Correo Electrónico */}
+
           <div className="mb-3">
             <label className="form-label">Correo Electrónico</label>
             <input
@@ -148,6 +186,9 @@ export function Registro() {
               onChange={(e) => { setClave(e.target.value); setError(""); }}
               disabled={loading}
             />
+            <span className="form-text-hint d-block mt-1" style={{ fontSize: "0.78rem", color: "#94a3b8" }}>
+              Mínimo 10 caracteres, con una mayúscula, un número y un carácter especial.
+            </span>
           </div>
 
           <button type="submit" className="btn-login-cfd w-100" disabled={loading}>
