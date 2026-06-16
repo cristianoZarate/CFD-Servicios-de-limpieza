@@ -7,6 +7,7 @@ import "./Registro.css";
 export function Registro() {
   const navigate = useNavigate();
   const [nombre, setNombre] = useState("");
+  const [apellido, setApellido] = useState("");
   const [correo, setCorreo] = useState("");
   const [telefono, setTelefono] = useState(""); 
   const [direccion, setDireccion] = useState(""); 
@@ -23,7 +24,7 @@ export function Registro() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (!nombre.trim() || !correo.trim() || !telefono.trim() || !direccion.trim() || !clave.trim()) {
+    if (!nombre.trim() || !apellido.trim() || !correo.trim() || !telefono.trim() || !direccion.trim() || !clave.trim()) {
       setError("Todos los campos son obligatorios.");
       return;
     }
@@ -40,6 +41,7 @@ export function Registro() {
       // Enviamos el objeto con todos los datos integrados esperados por Spring Boot
       await registrarUsuario({ 
         nombre: nombre.trim(),
+        apellido: apellido.trim(),
         correo: correo.trim().toLowerCase(), 
         telefono: telefono.trim(), 
         direccion: direccion.trim(), 
@@ -70,21 +72,34 @@ export function Registro() {
         </div>
 
         {error && <div className="alert alert-danger py-2 text-center" style={{ fontSize: '0.85rem' }}>{error}</div>}
-
+        {/* Nombre */}
         <form onSubmit={handleSubmit} className="login-form-content">
-          {/* Nombre Completo */}
-          <div className="mb-3">
-            <label className="form-label">Nombre Completo</label>
-            <input
-              type="text"
-              className="form-control"
-              placeholder="Ej: Juan Pérez"
-              value={nombre}
-              onChange={(e) => { setNombre(e.target.value); setError(""); }}
-              disabled={loading}
-            />
+          <div className="row g-2 mb-3">
+            <div className="col-md-6">
+              <label className="form-label">Nombre</label>
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Ej: Juan"
+                value={nombre}
+                onChange={(e) => { setNombre(e.target.value); setError(""); }}
+                disabled={loading}
+              />
+            </div>
+            {/*  Apellido */}
+            <div className="col-md-6">
+              <label className="form-label">Apellido</label>
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Ej: Pérez"
+                value={apellido}
+                onChange={(e) => { setApellido(e.target.value); setError(""); }}
+                disabled={loading}
+              />
+            </div>
           </div>
-
+          {/*  Correo Electrónico */}
           <div className="mb-3">
             <label className="form-label">Correo Electrónico</label>
             <input

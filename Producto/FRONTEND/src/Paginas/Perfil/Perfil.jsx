@@ -22,7 +22,7 @@ export function Perfil() {
   const [cargandoAgendamientos, setCargandoAgendamientos] = useState(true);
   const [errorAgendamientos, setErrorAgendamientos] = useState("");
 
-  // 1. Verificar sesión activa y obtener el ID del usuario logueado
+  // Verificar sesión activa y obtener el ID del usuario logueado
   useEffect(() => {
     try {
       const rawUser = localStorage.getItem("usuarioLogueado");
@@ -36,6 +36,17 @@ export function Perfil() {
         navigate("/login");
         return;
       }
+
+      const esAdmin =
+        sesion.correo?.toLowerCase().endsWith("@cfdservicios.cl") ||
+        ["administrador", "admin"].includes(sesion.rol?.toLowerCase()) ||
+        ["administrador", "admin"].includes(sesion.role?.toLowerCase());
+
+      if (esAdmin) {
+        navigate("/admin");
+        return;
+      }
+
       setUsuarioId(id);
     } catch (e) {
       console.error("Error al leer la sesión:", e);
@@ -43,7 +54,7 @@ export function Perfil() {
     }
   }, [navigate]);
 
-  // 2. Cargar los datos reales del perfil una vez que tenemos el ID
+  // Cargar los datos reales del perfil
   useEffect(() => {
     if (!usuarioId) return;
 
@@ -70,7 +81,7 @@ export function Perfil() {
     cargarPerfil();
   }, [usuarioId]);
 
-  // 3. Cargar el historial de agendamientos
+  // Historial de agendamientos
   useEffect(() => {
     if (!usuarioId) return;
 
@@ -116,7 +127,6 @@ export function Perfil() {
         direccion: datos.direccion.trim(),
       });
 
-      // Sincroniza el nombre en localStorage para que la Navbar lo refleje al instante
       const sesion = JSON.parse(localStorage.getItem("usuarioLogueado"));
       const sesionActualizada = { ...sesion, nombre: respuesta.data.nombre };
       localStorage.setItem("usuarioLogueado", JSON.stringify(sesionActualizada));
