@@ -157,9 +157,12 @@
   min-width: 100px;
 }
 
+/* Estados */
 .status-pill.pendiente { background-color: #fff8e1; color: #ff8f00; }
 .status-pill.confirmado { background-color: #e8f5e9; color: #2e7d32; }
 .status-pill.finalizado { background-color: #eceff1; color: #455a64; }
+.status-pill.confirmada { background-color: #e8f5e9; color: #2e7d32; }
+.status-pill.cancelada { background-color: #ffebee; color: #c62828; }
 
 /* Botones de Acción en Tabla */
 .btn-icon-edit {
