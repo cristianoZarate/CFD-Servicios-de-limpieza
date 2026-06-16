@@ -21,12 +21,11 @@ public class Reserva {
     @JoinColumn(name = "disponibilidad_id", nullable = false)
     private Disponibilidad disponibilidad;
 
-    
     @ManyToOne
-    @JoinColumn(name = "servicio_id", nullable = false)
-    private CategoriaServicio servicio; 
+    @JoinColumn(name = "servicio_id")
+    private Servicio servicio;
 
-    private String estado; // "PENDIENTE", "CONFIRMADA", "CANCELADA"
+    private String estado;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt = LocalDateTime.now();

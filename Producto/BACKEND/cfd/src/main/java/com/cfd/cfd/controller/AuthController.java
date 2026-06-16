@@ -37,14 +37,14 @@ public class AuthController {
             return ResponseEntity.badRequest().body("El correo ya está registrado");
         }
         
-        // --- GARANTÍA DE ROL POR DEFECTO: Si el cliente no especifica un rol, se le asigna "cliente"
+        // Si el cliente no especifica un rol, se le asigna "cliente"
         
         if (usuario.getRol() == null || usuario.getRol().trim().isEmpty()) {
             usuario.setRol("cliente");
         }
         // ---------------------------------
         
-        // Encriptamos la contraseña usando BCrypt antes de guardarla en MySQL
+        // contraseña encriptada usando BCrypt
         usuario.setPasswordHash(passwordEncoder.encode(usuario.getPasswordHash()));
         usuarioRepository.save(usuario);
         return ResponseEntity.ok("Usuario registrado exitosamente");
@@ -57,19 +57,11 @@ public class AuthController {
             authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.get("correo"), loginRequest.get("password"))
             );
-            
-            // Si las credenciales son correctas, fabricamos el token JWT
             String token = jwtUtil.generateToken(loginRequest.get("correo"));
-            
-            // Buscamos al usuario real con orElseThrow para máxima seguridad
             Usuario usuarioReal = usuarioRepository.findByCorreo(loginRequest.get("correo"))
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado en la base de datos"));
-            
-            // Armamos la estructura de respuesta múltiple (Token + Objeto Usuario)
             Map<String, Object> response = new HashMap<>();
             response.put("token", token);
-            
-            // Creamos un sub-objeto con los datos seguros del usuario mapeados para el Local Storage
             Map<String, Object> usuarioInfo = new HashMap<>();
             usuarioInfo.put("id", usuarioReal.getId());
             usuarioInfo.put("nombre", usuarioReal.getNombre());

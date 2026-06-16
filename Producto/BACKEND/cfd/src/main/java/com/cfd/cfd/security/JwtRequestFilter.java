@@ -29,12 +29,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         final String authorizationHeader = request.getHeader("Authorization");
-        
-        // Convertimos la URI a minúsculas para evitar problemas de descalce
         final String requestURI = request.getRequestURI().toLowerCase();
 
-  
-        // Se elimina "usuarios" de esta lista para obligar la validación de tokens en la gestión de clientes
         if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ") || 
             requestURI.contains("auth") || 
             requestURI.contains("servicios") || 
@@ -49,7 +45,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         String username = null;
         String jwt = null;
 
-        // Procesa y valida el token JWT entrante si la ruta está protegida
         jwt = authorizationHeader.substring(7);
         try {
             username = jwtUtil.extractUsername(jwt);
