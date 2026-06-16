@@ -66,7 +66,7 @@ class DisponibilidadServiceTest {
 
     /**
      Si no existen bloques para la fecha y servicio, el servicio
-     debe generar exactamente 11 franjas de 1 hora (09:00 a 20:00),
+     debe generar exactamente 11 bloques de 1 hora (09:00 a 20:00),
      con cuposTotales = 1 y cuposOcupados = 0.
      */
     @Test

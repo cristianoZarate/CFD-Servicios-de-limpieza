@@ -50,19 +50,14 @@ public class ReservaServiceTest {
         Disponibilidad disponibilidadLlena = new Disponibilidad();
         disponibilidadLlena.setId(10);
         disponibilidadLlena.setCuposTotales(2);
-        disponibilidadLlena.setCuposOcupados(2); // Lleno
+        disponibilidadLlena.setCuposOcupados(2); 
 
         when(usuarioRepository.findById(1)).thenReturn(Optional.of(usuarioMock));
         when(disponibilidadRepository.findById(10)).thenReturn(Optional.of(disponibilidadLlena));
 
-        // 2. EJECUCIÓN Y VERIFICACIÓN
         Exception exception = assertThrows(RuntimeException.class, () -> {
             reservaService.procesarNuevaReserva(request);
         });
-
-        // FIX: el mensaje anterior en el test era "Lo sentimos, ya no hay cupos para este horario."
-        // pero ReservaService lanza "Lo sentimos, ya no hay cupos disponibles para este horario."
-        // Ambos deben ser idénticos. Se corrige el test para reflejar el mensaje real del servicio.
         assertEquals("Lo sentimos, ya no hay cupos disponibles para este horario.", exception.getMessage());
     }
 }
