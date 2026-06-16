@@ -3,6 +3,12 @@ import React, { useState, useEffect } from "react";
 import { getUsuarios } from "../Servicios/Api"; 
 import "./AdminClientes.css";
 
+function esUsuarioAdmin(u) {
+  const correo = (u.correo || u.email || "").toLowerCase();
+  const rol = (u.rol || u.role || "").toLowerCase();
+  return correo.endsWith("@cfdservicios.cl") || ["admin", "administrador"].includes(rol);
+}
+
 export function AdminClientes() {
   const [clientes, setClientes] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -21,11 +27,11 @@ export function AdminClientes() {
             correo: u.correo || u.email || "No registrado",
             rol: u.rol || u.role || "cliente",
             telefono: u.telefono || "No registrado",
-            direccion: u.direccion || "Dirección no provista"
+            direccion: u.direccion || "Dirección no provista",
+            esAdmin: esUsuarioAdmin(u), // FIX: se calcula sobre el usuario crudo, antes del default de rol
           }));
 
-
-          setClientes(clientesFormateados.filter(c => c.rol.toLowerCase() === "cliente"));
+          setClientes(clientesFormateados.filter(c => !c.esAdmin));
         } else {
           setClientes([]);
         }
@@ -42,7 +48,6 @@ export function AdminClientes() {
 
   return (
     <div className="clientes-section-wrapper animate__animated animate__fadeIn">
-      {/* Fila de Tarjetas de Métrica (KPI idéntico al Dashboard) */}
       <div className="row mb-4">
         <div className="col-md-4">
           <div className="card-kpi kpi-purple">
