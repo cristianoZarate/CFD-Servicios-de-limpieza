@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-CfdApplication<cfd>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.cfd.cfd.CfdApplication",
+            "projectName": "cfd",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
