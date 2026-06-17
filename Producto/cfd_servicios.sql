@@ -161,6 +161,8 @@ CREATE TABLE `usuarios` (
 ) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
+ALTER TABLE reservas MODIFY COLUMN servicio_id INT(11) NULL;
+
 --
 -- Dumping data for table `usuarios`
 --
