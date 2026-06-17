@@ -87,7 +87,7 @@ CREATE TABLE `reservas` (
   `estado` varchar(255) DEFAULT NULL,
   `disponibilidad_id` int(11) NOT NULL,
   `usuario_id` int(11) NOT NULL,
-  `servicio_id` bigint(20) DEFAULT NULL,
+  `servicio_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `FK5i68u9qmmiqgj068iuatfcrvq` (`disponibilidad_id`),
   KEY `FKcfh7qcr7oxomqk5hhbxdg2m7p` (`usuario_id`),
@@ -161,8 +161,6 @@ CREATE TABLE `usuarios` (
 ) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
-ALTER TABLE reservas MODIFY COLUMN servicio_id INT(11) NULL;
-
 --
 -- Dumping data for table `usuarios`
 --
@@ -182,4 +180,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-06-15 22:57:28
+-- Dump completed on 2026-06-17 19:59:02
