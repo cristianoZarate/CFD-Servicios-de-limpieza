@@ -3,9 +3,9 @@ package com.cfd.cfd.service;
 import com.cfd.cfd.dto.ReservaRequestDTO;
 import com.cfd.cfd.model.Disponibilidad;
 import com.cfd.cfd.model.Usuario;
-import com.cfd.cfd.repository.CategoriaServicioRepository;
 import com.cfd.cfd.repository.DisponibilidadRepository;
 import com.cfd.cfd.repository.ReservaRepository;
+import com.cfd.cfd.repository.ServicioRepository;
 import com.cfd.cfd.repository.UsuarioRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,14 +32,14 @@ public class ReservaServiceTest {
     private UsuarioRepository usuarioRepository;
 
     @Mock
-    private CategoriaServicioRepository categoriaServicioRepository;
+    private ServicioRepository servicioRepository;
 
     @InjectMocks
     private ReservaService reservaService;
 
     @Test
     public void testCrearReservaSinCupos_LanzaExcepcion() {
-        // 1. PREPARACIÓN
+        // PREPARACIÓN
         ReservaRequestDTO request = new ReservaRequestDTO();
         request.setUsuarioId(1);
         request.setDisponibilidadId(10);
