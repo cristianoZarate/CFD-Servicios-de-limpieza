@@ -28,15 +28,20 @@ export function Registro() {
       return "El correo ingresado no tiene un formato válido.";
     }
 
-    // Restriccion correos -> Solo gmail o cfd
-    const dominioPermitido = /^[a-z0-9._%+-]+@(cfdservicios\.cl|gmail\.com)$/;
-    if (!dominioPermitido.test(emailLimpio)) {
-      return "Solo se permiten correos @gmail.com o corporativos @cfdservicios.cl.";
+    // Correos corporativos: solo la whitelist puede registrarse
+    const CORREOS_CORPORATIVOS = ["fzarate@cfdservicios.cl", "gavendano@cfdservicios.cl"];
+    if (emailLimpio.endsWith("@cfdservicios.cl")) {
+      if (!CORREOS_CORPORATIVOS.includes(emailLimpio)) {
+        return "Este correo corporativo no está autorizado para registrarse.";
+      }
+      return null;
     }
 
-    return null; 
-  };
-
+    // Correos públicos: gmail, hotmail u outlook
+    const dominioPublico = /^[a-z0-9._%+-]+@(gmail\.com|hotmail\.com|outlook\.com)$/;
+    if (!dominioPublico.test(emailLimpio)) {
+      return "Solo se permiten correos @gmail.com, @hotmail.com o @outlook.com.";
+    }
   const validarClave = (password) => {
     const faltantes = [];
 
