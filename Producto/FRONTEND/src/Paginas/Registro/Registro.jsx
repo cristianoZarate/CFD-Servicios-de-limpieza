@@ -168,5 +168,4 @@ export function Registro() {
         </form>
       </div>
     </main>
-  );
-}
+  )}};
