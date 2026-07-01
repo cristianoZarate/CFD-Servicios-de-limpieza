@@ -86,37 +86,57 @@ export function Registro() {
         {error && <div className="alert alert-danger py-2 text-center" style={{ fontSize: '0.85rem' }}>{error}</div>}
 
         <form onSubmit={handleSubmit} className="login-form-content">
+          
           <div className="mb-3">
-            <label className="form-label">Correo Electrónico</label>
-            <input type="email" className="form-control" value={correo} onChange={(e) => setCorreo(e.target.value)} disabled={loading} />
+            <label className="form-label">Nombre</label>
+            <input type="text" className="form-control" value={nombre} onChange={(e) => {setNombre(e.target.value); setError("");}} disabled={loading} />
           </div>
 
-        {/* Campo de Contraseña con el botón de visibilidad */}
-        <div className="mb-4">
-          <label className="form-label">Contraseña</label>
-          <div className="input-group">
-            <input
-              type={verClave ? "text" : "password"}
-              className="form-control"
-              placeholder="Crea una contraseña segura"
-              value={clave}
-              onChange={(e) => { setClave(e.target.value); setError(""); }}
-              disabled={loading}
-              // Atributo requerido por seguridad en navegadores
-              autoComplete="new-password" 
-            />
-            <button
-              type="button"
-              className="btn btn-outline-secondary"
-              onClick={() => setVerClave(!verClave)}
-              aria-label={verClave ? "Ocultar contraseña" : "Mostrar contraseña"}
-            ><i className={verClave ? "bi bi-eye-slash" : "bi bi-eye"} aria-hidden="true"></i>
-            </button>
+          <div className="mb-3">
+            <label className="form-label">Apellido</label>
+            <input type="text" className="form-control" value={apellido} onChange={(e) => {setApellido(e.target.value); setError("");}} disabled={loading} />
           </div>
-          <span className="form-text-hint d-block mt-1" style={{ fontSize: "0.78rem", color: "#94a3b8" }}>
-            Mínimo 10 caracteres, con una mayúscula, un número y un carácter especial.
-          </span>
-        </div>
+
+          <div className="mb-3">
+            <label className="form-label">Teléfono</label>
+            <input type="tel" className="form-control" value={telefono} onChange={(e) => {setTelefono(e.target.value); setError("");}} disabled={loading} />
+          </div>
+
+          <div className="mb-3">
+            <label className="form-label">Dirección</label>
+            <input type="text" className="form-control" value={direccion} onChange={(e) => {setDireccion(e.target.value); setError("");}} disabled={loading} />
+          </div>
+
+          <div className="mb-3">
+            <label className="form-label">Correo Electrónico</label>
+            <input type="email" className="form-control" value={correo} onChange={(e) => {setCorreo(e.target.value); setError("");}} disabled={loading} />
+          </div>
+
+          {/* Campo de Contraseña con el botón de visibilidad */}
+          <div className="mb-4">
+            <label className="form-label">Contraseña</label>
+            <div className="input-group">
+              <input
+                type={verClave ? "text" : "password"}
+                className="form-control"
+                placeholder="Crea una contraseña segura"
+                value={clave}
+                onChange={(e) => { setClave(e.target.value); setError(""); }}
+                disabled={loading}
+                autoComplete="new-password" 
+              />
+              <button
+                type="button"
+                className="btn btn-outline-secondary"
+                onClick={() => setVerClave(!verClave)}
+                aria-label={verClave ? "Ocultar contraseña" : "Mostrar contraseña"}
+              ><i className={verClave ? "bi bi-eye-slash" : "bi bi-eye"} aria-hidden="true"></i>
+              </button>
+            </div>
+            <span className="form-text-hint d-block mt-1" style={{ fontSize: "0.78rem", color: "#94a3b8" }}>
+              Mínimo 10 caracteres, con una mayúscula, un número y un carácter especial.
+            </span>
+          </div>
 
           <button type="submit" className="btn-login-cfd w-100" disabled={loading}>
             {loading ? "Creando cuenta..." : "Registrarse"}
