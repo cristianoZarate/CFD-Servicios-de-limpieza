@@ -226,9 +226,6 @@ export function AdminDashboard() {
                                     </span>
                                   </td>
                                   <td className="text-center" onClick={(e) => e.stopPropagation()}>
-                                    <button className="btn btn-icon-edit me-2" title="Editar fila">
-                                      <i className="bi bi-pencil"></i>
-                                    </button>
                                     <button 
                                       className="btn btn-icon-delete" 
                                       title="Cancelar agendamiento (Liberar cupo)"
