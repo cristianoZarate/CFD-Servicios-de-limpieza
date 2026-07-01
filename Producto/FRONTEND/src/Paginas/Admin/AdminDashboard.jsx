@@ -53,7 +53,7 @@ export function AdminDashboard() {
 
   const handleCancelarCita = async (reservaId) => {
     const confirmar = window.confirm(
-      "¿Está seguro de que desea cancelar este agendamiento? Esta acción liberará un cupo automáticamente en la base de datos."
+      "¿Está seguro de que desea cancelar este agendamiento?"
     );
  
     if (!confirmar) return;
@@ -61,7 +61,7 @@ export function AdminDashboard() {
     try {
       await cancelarReservaApi(reservaId);
       
-      alert("Agendamiento cancelado con éxito. Cupo liberado en MySQL.");
+      alert("Agendamiento cancelado con éxito. Cupo liberado.");
       
       setCitas((prev) => prev.filter((cita) => cita.id !== reservaId));
       
@@ -70,7 +70,7 @@ export function AdminDashboard() {
       }
     } catch (error) {
       console.error("Error al intentar cancelar la reserva desde el panel:", error);
-      alert("No se pudo procesar la cancelación. Verifica que el backend esté corriendo.");
+      alert("No se pudo procesar la cancelación. Eror en la conexion a los datos.");
     }
   };
  
@@ -183,7 +183,7 @@ export function AdminDashboard() {
                   {loading ? (
                     <div className="text-center py-4">
                       <div className="spinner-border text-primary" role="status"></div>
-                      <p className="mt-2 text-muted small">Consultando base de datos MySQL...</p>
+                      <p className="mt-2 text-muted small">Consultando base de datos ...</p>
                     </div>
                   ) : citas.length === 0 ? (
                     <div className="text-center py-5 text-muted">
