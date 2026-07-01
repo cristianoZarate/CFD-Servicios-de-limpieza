@@ -42,6 +42,8 @@ export function Registro() {
     if (!dominioPublico.test(emailLimpio)) {
       return "Solo se permiten correos @gmail.com, @hotmail.com o @outlook.com.";
     }
+    return null;
+  };
   const validarClave = (password) => {
     const faltantes = [];
 
